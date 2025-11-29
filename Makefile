@@ -2,7 +2,7 @@ NAME        = fdf
 
 CC          = cc
 CFLAGS      = -Wall -Wextra -Werror
-CFLAGS     += -Iincludes -Iminilibx 
+CFLAGS     += -Iincludes -Iminilibx -I. -Isrc/Libft/includes
 
 SRCS        = $(shell find src -name "*.c")
 //SRCS       += $(shell find includes/ft_printf -name "*.c")
