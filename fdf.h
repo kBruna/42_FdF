@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/11/28 15:45:07 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/03 12:29:46 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct	s_axis
 	int	x;
 	int y;
 	int z;
-	int	displace;
+	int	color;
 }				t_axis;
 
 typedef struct	s_color
@@ -61,7 +61,10 @@ typedef struct	s_color
 }				t_color;
 
 // -------- Prototypes ---------
+int		ishigher(int org, int dest);
+
 void	pixel_put(t_data *data, int x, int y, int color);
+
 void	bresenham(t_data *view, t_axis *org, t_axis dest, int color);
 
 #endif
