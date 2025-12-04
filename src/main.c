@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/03 22:31:37 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/04 20:11:46 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,43 +45,54 @@ void	ft_void_swap(void *var1, void *var2, size_t size)
 	free(temp);
 }
 
+void	swap_vars(t_axis *cal, t_axis *org, t_axis *dest, t_axis *diff)
+{
+	ft_void_swap(&cal->x, &cal->y, sizeof(int));
+	ft_void_swap(&org->x, &org->y, sizeof(int));
+	ft_void_swap(&dest->x, &dest->y, sizeof(int));
+	ft_void_swap(&diff->x, &diff->y, sizeof(int));
+}
+
 void	bresanham(t_data *view, t_axis org, t_axis dest)
 {
 	double	bress;
-	int		dx;
-	int		dy;
+	t_axis	cal;
 	t_axis	diff;
 
-	dx = abs(dest.x - org.x);
-	dy = abs(dest.y - org.y);
+	cal.x = abs(dest.x - org.x);
+	cal.y = abs(dest.y - org.y);
 	diff.x = ishigher(org.x, dest.x);
 	diff.y = ishigher(org.y, dest.y);
-	if (dy > dx)
-	{
-		ft_void_swap(&dx, &dy, sizeof(int));
-		ft_void_swap(&org.x, &org.y, sizeof(int));
-		ft_void_swap(&dest.x, &dest.y, sizeof(int));
-		ft_void_swap(&diff.x, &diff.y, sizeof(int));
-	}
-	bress = 2 * dy - dx;
+	if (cal.y > cal.x)
+		swap_vars(&cal, &org, &dest, &diff);
+	bress = 2 * cal.y - cal.x;
 	while (org.x != dest.x || org.y != dest.y)
 	{
 		pixel_put(view, org.x, org.y, org.color);
 		if (bress < 0)
 		{
 			bres_util(&org.x, &org.y, bress, diff);
-			bress += 2 * dy;
+			bress += 2 * cal.y;
 		}
 		else
 		{
 			bres_util(&org.x, &org.y, bress, diff);
-			bress += 2 * dy - 2 * dx;
+			bress += 2 * cal.y - 2 * cal.x;
 		}
 	}
 }
 
 int	close_program(t_master *master)
 {
+	int	cols;
+
+	cols = 0;
+	while(master->cols > cols)
+	{
+		free(master->matrix[cols]);
+		cols++;
+	}
+	free(master->matrix);
 	mlx_destroy_image(master->mlx.mlx, master->img.img);
 	mlx_destroy_window(master->mlx.mlx, master->mlx.window);
 	mlx_destroy_display(master->mlx.mlx);
@@ -124,19 +135,12 @@ int	main(void)
 	t_master	master;
 	int			color;
 	int			color2;
-	t_axis		point;
+	t_axis		org;
 	t_axis		dest;
-	int			x = 3;
-	int			y = 2;
-	int 		matrix[3][2] = {
-				{0, 0},
-				{0, 1},
-				{0, 0}
-				};
-	int			width = 2;
-	int			height = 3;
-	double		dx;
-	double		dy;
+	int			x;
+	int			y;
+	int			width = 5;
+	int			height = 5;
 	
 	if(!ft_mlx_init(&master))
 		return (FALSE);
@@ -144,45 +148,51 @@ int	main(void)
 			&master.img.line_length, &master.img.endian);
 	color = 0x0000FFFF;
 	color2 = 0x00FF0000;
-/*	point.x = 0;
-	bress_right(&master.img, &p2, dest, color2);*/
+	master.cols = width;
+	master.rows = height;
+	master.matrix = (int **)malloc(master.rows * sizeof(int *));
+	if (master.matrix == NULL)
+		return (1);
 	x = 0;
-	while(x <= height)
+	while (x < master.rows)
+	{
+		master.matrix[x] = (int *)malloc(master.cols * sizeof(int));
+		x++;
+	}
+	x = 0;
+	while (x < master.rows)
+	{
+		y = 0;
+		while (y < master.cols)
+		{
+			master.matrix[x][y] = 0;
+			y++;
+		}
+		x++;
+	}
+	x = 0;
+	while(x < master.rows)
 	{
 		y = 0;	
-		while(y <= width)
+		while(y < master.cols)
 		{
-			// Projection Code
-			dx = (x - y) * cos(0.523599);
-			dy = (y + x) * sin(0.523599) + matrix[x][y];
-			dx *= 10;
-			dy *= 10;
-			dx += 500 / 2; // * ZOOM latter --- WIDTH / 2
-			dy += 500 / 2; // same ^ --- HEIGHT / 2 
-			//End Projection Code;
-			point.x = round(dx);
-			point.y = round(dy);
-			point.color = color;
+			projection(master.matrix, x, y, &org);
+			org.color = color;
 			dest.color = color2;
-			dx = ((x+1) - y) * cos(0.523599);
-			dy = ((x+1) + y) * sin(0.523599) + matrix[x][y];
-			dx *= 10;
-			dy *= 10;
-			dx += 500 / 2; // * ZOOM latter --- WIDTH / 2
-			dy += 500 / 2; // same ^ --- HEIGHT / 2 
-			dest.x = dx;
-			dest.y = dy;
-			bresanham(&master.img, point, dest);
-			dx = (x - (y + 1)) * cos(0.523599);
-			dy = (x + (y + 1)) * sin(0.523599) + matrix[x][y];
-			dx *= 10;
-			dy *= 10;
-			dx += 500 / 2; // * ZOOM latter --- WIDTH / 2
-			dy += 500 / 2; // same ^ --- HEIGHT / 2 
-			dest.x = dx;
-			dest.y = dy;
-	//		dest.y = round(dy) + 10;
-			bresanham(&master.img, point, dest);
+			if (x + 1 < master.rows)
+			{
+				projection(master.matrix, x + 1, y, &dest);
+				if (dest.x > 500 || dest.y > 500) // CANVAS SIZE
+					break ;
+				bresanham(&master.img, org, dest);
+			}
+			if (y + 1 < master.cols)
+			{
+				projection(master.matrix, x, y + 1, &dest);
+				if (dest.x > 500 || dest.y > 500) // CANVAS SIZE
+					break ;
+				bresanham(&master.img, org, dest);
+			}
 			y++;
 		}
 		x++;
@@ -192,4 +202,21 @@ int	main(void)
 	mlx_hook(master.mlx.window, 17, 1L<<17, close_program, &master.mlx);
 	mlx_loop(master.mlx.mlx);	
 	return (0);
+}
+
+void	projection(int **matrix, int x, int y, t_axis *dest)
+{
+	double	dx;
+	double	dy;
+	float	zoom;
+
+	zoom = 20;
+	dx = (x - y) * cos(ANGLE);
+	dy = (x + y) * sin(ANGLE) * zoom; 
+	dy -= matrix[x][y] * zoom;
+	dx *= zoom;
+	dx += (500 - (5 * 10)) / 2;
+	dy += (500 - (4 * 10)) / 2; 
+	dest->x = round(dx);
+	dest->y = round(dy);
 }

@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/03 12:29:46 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/04 19:41:15 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ typedef struct	s_master
 {
 	t_var	mlx;
 	t_data	img;
+	int		**matrix;
+	int		cols;
+	int		rows;
 }				t_master;
 
 typedef struct	s_axis
@@ -66,5 +69,7 @@ int		ishigher(int org, int dest);
 void	pixel_put(t_data *data, int x, int y, int color);
 
 void	bresenham(t_data *view, t_axis *org, t_axis dest, int color);
+
+void	projection(int **matrix, int x, int y, t_axis *dest);
 
 #endif
