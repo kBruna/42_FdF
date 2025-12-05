@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/04 20:11:46 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/05 20:33:50 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,88 @@ int	ft_mlx_init(t_master *master)
 	return (TRUE);
 }
 
-int	main(void)
+char	*get_buffer(int fd)
+{
+	char	*buffer;
+
+	buffer = get_next_line(fd);
+	if (*buffer == NULL)
+	{
+		free(buffer);
+		close(fd);
+		return (FALSE);
+	}
+	return (buffer);
+}
+	
+int	count_num(t_master *master)
+{
+	int	idx;
+	char	*buffer;
+
+	buffer = NULL;
+	while (buffer[0] != '\n')
+	{
+		*buffer = get_buffer(fd);
+		if (!buffer)
+			return (FALSE);
+		idx = 0;
+		while(*buffer[idx] != '\0')
+		{
+			if (ft_isdigit(*buffer[idx++]))
+				master->cols++;
+			if (ft_isspace(*buffer[idx]))
+				idx++;
+			if (*buffer[idx++] == ',')
+				while (!ft_isspace(*buffer[idx])
+					idx++;
+		}
+		free(buffer);
+		master->rows++;
+	}
+	return (TRUE);
+}
+
+int	open_map(int argc, char **argv, char **buffer)
+{
+	int	fd;
+
+	if (argc != 2)
+		return (FALSE);
+	fd = open(argv[argc - 1], O_RDONLY);
+	if (fd == -1)
+		return (FALSE);
+}
+
+void	matrix_fill(int	fd)
+{
+	char	*buffer;
+
+	master.matrix = (int **)malloc(master.rows * sizeof(int *));
+	if (master.matrix == NULL)
+		return ;
+	x = 0;
+	buffer = get_buffer(fd);
+	if (!buffer)
+		return ;
+	while (x < master.rows)
+	{
+		master.matrix[x] = (int *)malloc(master.cols * sizeof(int));
+		x++;
+	}
+	x = 0;
+	while (x < master.rows)
+	{
+		y = 0;
+		while (y < master.cols)
+		{
+			master.matrix[x][y] = ft_atoi(buffer);
+			y++; // ADD COLORS GET
+		}
+		x++;
+	}
+}
+int	main(int argc, char **argv)
 {
 	t_master	master;
 	int			color;
@@ -141,15 +222,24 @@ int	main(void)
 	int			y;
 	int			width = 5;
 	int			height = 5;
-	
-	if(!ft_mlx_init(&master))
+
+	/*if (argc != 2)
 		return (FALSE);
-	master.img.addr = mlx_get_data_addr(master.img.img, &master.img.bpp, 
-			&master.img.line_length, &master.img.endian);
-	color = 0x0000FFFF;
-	color2 = 0x00FF0000;
-	master.cols = width;
-	master.rows = height;
+	fd = open(argv[argc - 1], O_RDONLY);
+	if (fd == -1)
+		return (FALSE);
+	buffer = get_next_line(fd);
+	if (buffer == NULL)
+	{
+		close(fd);
+		return (FALSE);
+	}*/
+	if (!open_map(argc, argv, &buffer)) //Opening Map
+		return (FALSE);
+	master.cols = 0;
+	master.rows = 0;
+	if (!count_num(buffer, &master)) //Populating Master Matrix Numbers
+		return (FALSE);
 	master.matrix = (int **)malloc(master.rows * sizeof(int *));
 	if (master.matrix == NULL)
 		return (1);
@@ -165,12 +255,18 @@ int	main(void)
 		y = 0;
 		while (y < master.cols)
 		{
-			master.matrix[x][y] = 0;
+			master.matrix[x][y] = ft_atoi(buffer);
 			y++;
 		}
 		x++;
-	}
+	} // END FUNCTION
+	if(!ft_mlx_init(&master))
+		return (FALSE);
+	master.img.addr = mlx_get_data_addr(master.img.img, &master.img.bpp, 
+			&master.img.line_length, &master.img.endian);
 	x = 0;
+	color = 0x0000FFFF;
+	color2 = 0x00FF0000;
 	while(x < master.rows)
 	{
 		y = 0;	

@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/04 19:41:15 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/05 20:18:28 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct	s_master
 	int		**matrix;
 	int		cols;
 	int		rows;
+	int		color;
 }				t_master;
 
 typedef struct	s_axis
