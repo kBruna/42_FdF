@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/05 20:33:50 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/06 20:10:37 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,34 +143,43 @@ char	*get_buffer(int fd)
 	}
 	return (buffer);
 }
+
+void	buffer_check(char **buffer, t_master *master, int idx)
+{
+	if (ft_isdigit(*buffer[idx++]))
+		master->cols++;
+	if (ft_isspace(*buffer))
+		*buffer[idx++];
+	if (*buffer[idx] == ',')
+	{
+		master->color = 1;
+		while (!ft_isspace(*buffer[idx])
+			*buffer[idx++];
+	}
+}
 	
 int	count_num(t_master *master)
 {
-	int	idx;
+	int		idx;
 	char	*buffer;
 
 	buffer = NULL;
-	while (buffer[0] != '\n')
+	while (!buffer)
 	{
-		*buffer = get_buffer(fd);
+		buffer = get_buffer(fd);
 		if (!buffer)
 			return (FALSE);
 		idx = 0;
-		while(*buffer[idx] != '\0')
+		while(buffer[idx] != '\0')
 		{
-			if (ft_isdigit(*buffer[idx++]))
-				master->cols++;
-			if (ft_isspace(*buffer[idx]))
-				idx++;
-			if (*buffer[idx++] == ',')
-				while (!ft_isspace(*buffer[idx])
-					idx++;
+			buffer_check(&buffer, master, &idx);
 		}
 		free(buffer);
+		buffer = NULL;
 		master->rows++;
 	}
-	return (TRUE);
-}
+	return (TRUE); 
+	}
 
 int	open_map(int argc, char **argv, char **buffer)
 {
@@ -183,34 +192,95 @@ int	open_map(int argc, char **argv, char **buffer)
 		return (FALSE);
 }
 
-void	matrix_fill(int	fd)
+int	**matrix_make(t_master master)
 {
-	char	*buffer;
+	int	**matrix;
+	int	idx;
 
-	master.matrix = (int **)malloc(master.rows * sizeof(int *));
-	if (master.matrix == NULL)
-		return ;
-	x = 0;
-	buffer = get_buffer(fd);
-	if (!buffer)
-		return ;
-	while (x < master.rows)
+	matrix = (int **)malloc(master->rows * sizeof(int *));
+	if (!matrix)
+		return (NULL);
+	idx = 0;
+	while (idx < master->rows)
 	{
-		master.matrix[x] = (int *)malloc(master.cols * sizeof(int));
-		x++;
-	}
-	x = 0;
-	while (x < master.rows)
-	{
-		y = 0;
-		while (y < master.cols)
+		matrix[idx] = (int *)malloc(master->cols * sizeof(int));
+		if (matrix[idx] == NULL)
 		{
-			master.matrix[x][y] = ft_atoi(buffer);
-			y++; // ADD COLORS GET
+			while (idx > 0)
+			{
+				idx--;
+				free(matrix[idx]);
+			}
+			free(matrix);
 		}
-		x++;
 	}
+	return (matrix);
 }
+	
+void	matrix_free(int **matrix, int rows)
+{
+	int	idx;
+
+	if (!matrix)
+		return ;
+	idx = 0;
+	while (idx < rows)
+	{
+		free(matrix[idx]);
+		idx++;
+	}
+	free(matrix);
+}
+
+int **matrix_double(t_master *master)
+{
+	int		**color;
+	t_axis	idx;
+
+	master->matrix = matrix_make(*master);
+	if (!master->matrix)
+		return (NULL);
+	color = NULL;
+	if (master->color)
+	{
+		color = matrix_make(*master);
+		if (!color)
+		{
+			matrix_free(master->matrix);
+			return (NULL);
+		}
+	}
+	return (color);
+}
+
+int	matrix_fill(int fd, t_master master)
+{
+	int		**color;
+	t_axis 	idx;
+	int		buff_idx;
+
+	color = matrix_double(&master);
+	if (!master.matrix)
+		return (FALSE);
+	idx.x = 0;
+	buff_idx = 0;
+	while (idx.x < master->rows)
+	{
+		idx.y = 0;
+		while (idx.y < master->cols)
+		{
+			master->matrix[idx.x][idx.y] = ft_atoi(buffer[idx]);
+			buff_idx++;
+			if (master.color && buffer[buff_idx] == ',')
+			{
+				buff_idx++; // ATOI BASE for HEX numbers
+			}
+			idx.y++;
+		}
+		idx.x++;
+	}
+
+
 int	main(int argc, char **argv)
 {
 	t_master	master;
@@ -222,6 +292,7 @@ int	main(int argc, char **argv)
 	int			y;
 	int			width = 5;
 	int			height = 5;
+	int			**mcolor;
 
 	/*if (argc != 2)
 		return (FALSE);
@@ -238,8 +309,13 @@ int	main(int argc, char **argv)
 		return (FALSE);
 	master.cols = 0;
 	master.rows = 0;
+	master.color = 0;
 	if (!count_num(buffer, &master)) //Populating Master Matrix Numbers
 		return (FALSE);
+	if (master.color)
+		mcolor = matrix_color(master);
+	matrix_fill(fd, &master);
+	/*
 	master.matrix = (int **)malloc(master.rows * sizeof(int *));
 	if (master.matrix == NULL)
 		return (1);
@@ -259,7 +335,7 @@ int	main(int argc, char **argv)
 			y++;
 		}
 		x++;
-	} // END FUNCTION
+	} // END FUNCTION */
 	if(!ft_mlx_init(&master))
 		return (FALSE);
 	master.img.addr = mlx_get_data_addr(master.img.img, &master.img.bpp, 
@@ -269,7 +345,7 @@ int	main(int argc, char **argv)
 	color2 = 0x00FF0000;
 	while(x < master.rows)
 	{
-		y = 0;	
+		y = 0;
 		while(y < master.cols)
 		{
 			projection(master.matrix, x, y, &org);
