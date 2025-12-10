@@ -1,17 +1,24 @@
 NAME        = fdf
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -g3
+CFLAGS		= -Wall -Wextra -Werror -DGL_SILENCE_DEPRECATION -Wno-deprecated-declarations
 CFLAGS     += -Iincludes -Iminilibx -I. -Isrc/Libft/includes
 
 SRCS        = $(shell find src -name "*.c")
-//SRCS       += $(shell find includes/ft_printf -name "*.c")
 
 OBJS        = $(SRCS:.c=.o)
 
 MLX_DIR     = minilibx
-MLX_LIB     = $(MLX_DIR)/libmlx_Linux.a
-MLX_FLAGS   = -L$(MLX_DIR) -lmlx_Linux -lXext -lX11 -lm -lz
+
+ifeq ($(UNAME), Darwin)
+	#MacOs
+	MLX_LIB = $(MLX_DIR)/libmlx.a
+	MLX_FLAGS = -Lmlx -lmlx -framework OpenGL -framework AppKit
+else
+	#Linux
+	MLX_LIB     = $(MLX_DIR)/libmlx.a
+	MLX_FLAGS   = -L$(MLX_DIR) -lmlx_Linux -lXext -lX11 -lm -lz
+endif
 
 all: $(MLX_LIB) $(NAME)
 

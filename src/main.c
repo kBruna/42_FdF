@@ -232,7 +232,7 @@ void	matrix_free(int **matrix, int rows)
 	free(matrix);
 }
 
-int **matrix_double(t_master *master)
+int	**matrix_double(t_master *master)
 {
 	int		**color;
 	t_axis	idx;
@@ -253,6 +253,27 @@ int **matrix_double(t_master *master)
 	return (color);
 }
 
+int	atoi_hex(char *nbr, int base)
+{
+	long int	hex;
+
+	hex = 0;
+	if (nbr[0] == '0' && (nbr[1] == 'x' || nbr[1] == 'X'))
+		*nbr += 2;
+	while (*nbr)
+	{
+		if (ft_isdigit(*nbr))
+			hex = hex * base + (*nbr - '0');
+		else if (*nbr >= 'a' && *nbr <= 'f') 
+			hex = hex * base + (*nbr - 'a' + 10);
+		else if (*nbr >= 'A' && *nbr <= 'F')
+			hex = hex * base + (*nbr - 'A' + 10);
+		else
+			break ;
+	}
+	return (hex);
+}
+
 int	matrix_fill(int fd, t_master master)
 {
 	int		**color;
@@ -263,7 +284,7 @@ int	matrix_fill(int fd, t_master master)
 	if (!master.matrix)
 		return (FALSE);
 	idx.x = 0;
-	buff_idx = 0;
+	buff_idx = 0; // Where's BUFFER comming FROM??????
 	while (idx.x < master->rows)
 	{
 		idx.y = 0;
@@ -273,7 +294,8 @@ int	matrix_fill(int fd, t_master master)
 			buff_idx++;
 			if (master.color && buffer[buff_idx] == ',')
 			{
-				buff_idx++; // ATOI BASE for HEX numbers
+				buff_idx++;
+				color[x][y] = ft_atoi_hex(buffer[buff_idx], 16);
 			}
 			idx.y++;
 		}
