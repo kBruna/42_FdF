@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/06 20:10:37 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/10 21:50:11 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,75 +135,96 @@ char	*get_buffer(int fd)
 	char	*buffer;
 
 	buffer = get_next_line(fd);
-	if (*buffer == NULL)
+	if (buffer == NULL)
 	{
 		free(buffer);
 		close(fd);
-		return (FALSE);
 	}
 	return (buffer);
 }
 
-void	buffer_check(char **buffer, t_master *master, int idx)
+void	buffer_check(char *buffer, int *cols, int *color)
 {
-	if (ft_isdigit(*buffer[idx++]))
-		master->cols++;
-	if (ft_isspace(*buffer))
-		*buffer[idx++];
-	if (*buffer[idx] == ',')
+	int	idx;
+
+	idx = 0;
+	while (buffer[idx] != '\0')
 	{
-		master->color = 1;
-		while (!ft_isspace(*buffer[idx])
-			*buffer[idx++];
+		if (ft_isdigit(buffer[idx]))
+		{
+			(*cols)++;
+			idx++;
+		}
+		if (ft_isspace(buffer[idx]) || buffer[idx] == '-' || buffer[idx] == '+')
+			idx++;
+		if (buffer[idx] == ',')
+		{
+			(*color) = 1;
+			while (!ft_isspace(buffer[idx]))
+				idx++;
+		}
 	}
 }
 	
-int	count_num(t_master *master)
+int	count_num(t_master *master, int fd)
 {
-	int		idx;
+	int		cols;
 	char	*buffer;
 
 	buffer = NULL;
 	while (!buffer)
 	{
+		cols = 0;
 		buffer = get_buffer(fd);
 		if (!buffer)
 			return (FALSE);
-		idx = 0;
-		while(buffer[idx] != '\0')
+		buffer_check(buffer, &cols, &master->color);
+		free(buffer); 
+		buffer = NULL; 
+		if (master->cols == 0)
+			master->cols = cols;
+		else if (master->cols != cols)
 		{
-			buffer_check(&buffer, master, &idx);
-		}
-		free(buffer);
-		buffer = NULL;
-		master->rows++;
+			ft_putstr_fd("Error: Wrong Map Format\n", 2); //STDOUT at ERROR FD
+			close(fd);
+			return (FALSE);
+		}	
+		master->rows++; 
 	}
 	return (TRUE); 
-	}
+}
 
-int	open_map(int argc, char **argv, char **buffer)
-{
+
+int	open_map(int argc, char **argv) 
+{ 
 	int	fd;
 
 	if (argc != 2)
+	{
+		ft_putstr_fd("Error: Wrong number of parameters used\n", 2);
 		return (FALSE);
+	}
 	fd = open(argv[argc - 1], O_RDONLY);
 	if (fd == -1)
+	{
+		ft_putstr_fd("Error: Failed to open map\n", 2);
 		return (FALSE);
+	}
+	return (fd);
 }
 
-int	**matrix_make(t_master master)
+int	**matrix_make(t_master *master)
 {
 	int	**matrix;
 	int	idx;
 
-	matrix = (int **)malloc(master->rows * sizeof(int *));
+	matrix = (int **)ft_calloc(master->rows, sizeof(int *));
 	if (!matrix)
 		return (NULL);
 	idx = 0;
 	while (idx < master->rows)
 	{
-		matrix[idx] = (int *)malloc(master->cols * sizeof(int));
+		matrix[idx] = (int *)ft_calloc(master->cols,sizeof(int));
 		if (matrix[idx] == NULL)
 		{
 			while (idx > 0)
@@ -212,7 +233,9 @@ int	**matrix_make(t_master master)
 				free(matrix[idx]);
 			}
 			free(matrix);
+			return (NULL);
 		}
+		idx++;
 	}
 	return (matrix);
 }
@@ -235,25 +258,24 @@ void	matrix_free(int **matrix, int rows)
 int	**matrix_double(t_master *master)
 {
 	int		**color;
-	t_axis	idx;
 
-	master->matrix = matrix_make(*master);
+	master->matrix = matrix_make(master);
 	if (!master->matrix)
 		return (NULL);
 	color = NULL;
 	if (master->color)
 	{
-		color = matrix_make(*master);
+		color = matrix_make(master);
 		if (!color)
 		{
-			matrix_free(master->matrix);
+			matrix_free(master->matrix, master->rows);
 			return (NULL);
 		}
 	}
 	return (color);
 }
 
-int	atoi_hex(char *nbr, int base)
+int	ft_atoi_hex(char *nbr, int base)
 {
 	long int	hex;
 
@@ -274,34 +296,55 @@ int	atoi_hex(char *nbr, int base)
 	return (hex);
 }
 
-int	matrix_fill(int fd, t_master master)
+void	matrix_error(int **color, t_master *master)
+{
+	matrix_free(color, master->rows);
+	matrix_free(master->matrix, master->rows);
+	return ;
+}
+
+int	matrix_fill(int fd, t_master *master)
 {
 	int		**color;
-	t_axis 	idx;
-	int		buff_idx;
+	t_axis 	id;
+	char	*buffer;
+	int		index;
 
-	color = matrix_double(&master);
-	if (!master.matrix)
+	color = matrix_double(master);
+	if (!master->matrix)
 		return (FALSE);
-	idx.x = 0;
-	buff_idx = 0; // Where's BUFFER comming FROM??????
-	while (idx.x < master->rows)
+	id.x = 0;
+	index = 0;
+	while (id.x < master->rows)
 	{
-		idx.y = 0;
-		while (idx.y < master->cols)
+		buffer = get_buffer(fd);
+		if (!buffer)
 		{
-			master->matrix[idx.x][idx.y] = ft_atoi(buffer[idx]);
-			buff_idx++;
-			if (master.color && buffer[buff_idx] == ',')
-			{
-				buff_idx++;
-				color[x][y] = ft_atoi_hex(buffer[buff_idx], 16);
-			}
-			idx.y++;
+			matrix_error(color, master);
+			return (FALSE);
 		}
-		idx.x++;
+		id.y = 0;
+		while (id.y < master->cols)
+		{
+			if (ft_isdigit(buffer[index]))
+				master->matrix[id.x][id.y] = ft_atoi(&buffer[index]);
+			while (ft_isdigit(buffer[index]))
+				index++;	
+			if (master->color && buffer[index] == ',')
+			{
+				index++;
+				color[id.x][id.y] = ft_atoi_hex(buffer, HEX);
+			}
+			while (ft_isspace(buffer[index]))
+				index++;
+			id.y++;
+		}
+		free(buffer);
+		id.x++;
 	}
-
+	close(fd);
+	return (TRUE);
+}
 
 int	main(int argc, char **argv)
 {
@@ -312,9 +355,10 @@ int	main(int argc, char **argv)
 	t_axis		dest;
 	int			x;
 	int			y;
-	int			width = 5;
-	int			height = 5;
-	int			**mcolor;
+	//int			width = 5;
+	//int			height = 5;
+	//int			**mcolor;
+	int			fd;
 
 	/*if (argc != 2)
 		return (FALSE);
@@ -327,15 +371,22 @@ int	main(int argc, char **argv)
 		close(fd);
 		return (FALSE);
 	}*/
-	if (!open_map(argc, argv, &buffer)) //Opening Map
+	fd = open_map(argc, argv);
+	if (fd == -1)
 		return (FALSE);
 	master.cols = 0;
 	master.rows = 0;
 	master.color = 0;
-	if (!count_num(buffer, &master)) //Populating Master Matrix Numbers
+	if (count_num(&master, fd))
 		return (FALSE);
-	if (master.color)
-		mcolor = matrix_color(master);
+	//if (master.color)
+		//mcolor = matrix_double(&master);
+	fd = open_map(argc, argv);
+	if (fd == -1)
+	{
+		//matrix_error(mcolor, &master);
+		return (FALSE);
+	}
 	matrix_fill(fd, &master);
 	/*
 	master.matrix = (int **)malloc(master.rows * sizeof(int *));

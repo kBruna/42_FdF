@@ -1,7 +1,7 @@
 NAME        = fdf
 
 CC          = cc
-CFLAGS		= -Wall -Wextra -Werror -DGL_SILENCE_DEPRECATION -Wno-deprecated-declarations
+CFLAGS		= -Wall -Wextra -Werror -DGL_SILENCE_DEPRECATION -Wno-deprecated-declarations -g3
 CFLAGS     += -Iincludes -Iminilibx -I. -Isrc/Libft/includes
 
 SRCS        = $(shell find src -name "*.c")
