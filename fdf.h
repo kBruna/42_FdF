@@ -14,8 +14,8 @@
 # define FDF_H
 
 # include <math.h>
+# include <OpenGL/gl.h>
 # include "../minilibx/mlx.h"
-# include "../minilibx/mlx_int.h"
 # include "src/Libft/includes/libft.h"
 # include "src/Libft/includes/get_next_line.h"
 # include "src/Libft/includes/ft_printf.h"
