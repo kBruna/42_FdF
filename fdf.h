@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/10 16:11:36 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/11 14:16:09 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 # include "src/Libft/includes/get_next_line.h"
 # include "src/Libft/includes/ft_printf.h"
 
-# define ANGLE 0.523599f
-# define HEX 16
+# define ANGLE 	0.523599f
+# define HEX 	16
 
 typedef struct	s_data
 {
@@ -48,6 +48,7 @@ typedef struct	s_master
 	int		cols;
 	int		rows;
 	int		color;
+	int		**mcolor;
 }				t_master;
 
 typedef struct	s_axis
