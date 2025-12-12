@@ -1,7 +1,7 @@
 NAME        = fdf
 
 CC          = cc
-CFLAGS		= -Wall -Wextra -Werror -DGL_SILENCE_DEPRECATION -Wno-deprecated-declarations -g3
+CFLAGS		= -Wall -Wextra -Werror -g3
 CFLAGS     += -Iincludes -Iminilibx -I. -Isrc/Libft/includes
 
 SRCS        = $(shell find src -name "*.c")
@@ -14,6 +14,7 @@ ifeq ($(UNAME), Darwin)
 	#MacOs
 	MLX_LIB = $(MLX_DIR)/libmlx.a
 	MLX_FLAGS = -Lmlx -lmlx -framework OpenGL -framework AppKit
+	CFLAGS += -fsanitize=address,undefined -o0 -DGL_SILENCE_DEPRECATION -Wno-deprecated-declarations 
 else
 	#Linux
 	MLX_LIB     = $(MLX_DIR)/libmlx.a
