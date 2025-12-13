@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/11 18:06:50 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/12 21:04:30 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,14 +123,14 @@ int	ft_mlx_init(t_master *master)
 	master->mlx.mlx = mlx_init();
 	if (!master->mlx.mlx)
 		return (FALSE);
-	master->mlx.window = mlx_new_window(master->mlx.mlx, 1500, 1500, "FdF");
+	master->mlx.window = mlx_new_window(master->mlx.mlx, WIDTH, HEIGHT, "FdF");
 	if (!master->mlx.window)
 	{
 		mlx_destroy_display(master->mlx.mlx);
 		free(master->mlx.mlx);
 		return (FALSE);
 	}
-	master->img.img = mlx_new_image(master->mlx.mlx, 1500, 1500);
+	master->img.img = mlx_new_image(master->mlx.mlx, WIDTH, HEIGHT);
 	if (!master->img.img)
 	{
 		mlx_destroy_window(master->mlx.mlx, master->mlx.window);
@@ -326,17 +326,17 @@ int	matrix_init(t_master *master, int fd)
 void	values_checker(char *buf, t_master *master, int *index, t_axis *id)
 {
 	if (ft_isdigit(buf[*index]) || buf[*index] == '-' || buf[*index] == '+')
-		master->matrix[id->x][id->y] = ft_atoi(&buf[*index]);
+		master->matrix[id->y][id->x] = ft_atoi(&buf[*index]);
 	while (ft_isdigit(buf[*index]))
 		(*index)++;	
 	if (master->color && buf[*index] == ',')
 	{
 		(*index)++;	
-		master->mcolor[id->x][id->y] = ft_atoi_hex(buf, HEX);
+		master->mcolor[id->y][id->x] = ft_atoi_hex(buf, HEX);
 	}
 	while (ft_isspace(buf[*index]))
 		(*index)++;	
-	id->y++;
+	id->x++;
 }
 
 int	matrix_fill(int fd, t_master *master)
@@ -345,8 +345,8 @@ int	matrix_fill(int fd, t_master *master)
 	char	*buf;
 	int		index;
 
-	id.x = 0;
-	while (id.x < master->rows)
+	id.y = 0;
+	while (id.y < master->rows)
 	{
 		index = 0;
 		buf = get_buffer(fd);
@@ -355,11 +355,11 @@ int	matrix_fill(int fd, t_master *master)
 			matrix_error(master->mcolor, master);
 			return (FALSE);
 		}
-		id.y = 0;
-		while (id.y < master->cols)
+		id.x = 0;
+		while (id.x < master->cols)
 			values_checker(buf, master, &index, &id);
 		free(buf);
-		id.x++;
+		id.y++;
 	}
 	close(fd);
 	return (TRUE);
@@ -395,34 +395,34 @@ int	main(int argc, char **argv)
 		return (FALSE);
 	master.img.addr = mlx_get_data_addr(master.img.img, &master.img.bpp, 
 			&master.img.line_length, &master.img.endian);
-	x = 0;
+	y = 0;
 	color = 0x0000FFFF;
 	color2 = 0x00FF0000;
-	while(x < master.rows)
+	while(y < master.rows)
 	{
-		y = 0;
-		while(y < master.cols)
+		x = 0;
+		while(x < master.cols)
 		{
 			projection(master.matrix, x, y, &org);
 			org.color = color;
 			dest.color = color2;
-			if (x + 1 < master.rows)
+			if (x + 1 < master.cols)
 			{
 				projection(master.matrix, x + 1, y, &dest);
-				if (dest.x > 1500 || dest.y > 1500) // CANVAS SIZE
+				if (dest.x > WIDTH || dest.y > HEIGHT)
 					break ;
 				bresanham(&master.img, org, dest);
 			}
-			if (y + 1 < master.cols)
+			if (y + 1 < master.rows)
 			{
 				projection(master.matrix, x, y + 1, &dest);
-				if (dest.x > 1500 || dest.y > 1500) // CANVAS SIZE
+				if (dest.x > WIDTH || dest.y > HEIGHT)
 					break ;
 				bresanham(&master.img, org, dest);
 			}
-			y++;
+			x++;
 		}
-		x++;
+		y++;
 	}
 	mlx_put_image_to_window(master.mlx.mlx, master.mlx.window, master.img.img, 0, 0);
 	mlx_hook(master.mlx.window, 2, 1L<<0, key_map, &master.mlx);
@@ -440,10 +440,10 @@ void	projection(int **matrix, int x, int y, t_axis *dest)
 	zoom = 20;
 	dx = (x - y) * cos(ANGLE);
 	dy = (x + y) * sin(ANGLE) * zoom; 
-	dy -= matrix[x][y] * zoom;
+	dy -= matrix[y][x] * zoom;
 	dx *= zoom;
-	dx += 1500 / 2; //Canvas Size
-	dy += 750 / 2; //Canvas Size
+	dx += WIDTH / 2;
+	dy += HEIGHT / 2;
 	dest->x = round(dx);
 	dest->y = round(dy);
 }

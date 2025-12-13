@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/11 14:16:09 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/12 21:03:07 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,18 @@
 # define FDF_H
 
 # include <math.h>
-# include <OpenGL/gl.h>
+//# include <OpenGL/gl.h>
+# include <fcntl.h>
 # include "../minilibx/mlx.h"
+# include "../minilibx/mlx_int.h"
 # include "src/Libft/includes/libft.h"
 # include "src/Libft/includes/get_next_line.h"
 # include "src/Libft/includes/ft_printf.h"
 
 # define ANGLE 	0.523599f
 # define HEX 	16
+# define WIDTH	1920
+# define HEIGHT 1030 
 
 typedef struct	s_data
 {
