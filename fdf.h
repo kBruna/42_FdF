@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/12 21:03:07 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/13 11:38:11 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@
 # include "src/Libft/includes/get_next_line.h"
 # include "src/Libft/includes/ft_printf.h"
 
-# define ANGLE 	0.523599f
-# define HEX 	16
-# define WIDTH	1920
-# define HEIGHT 1030 
+# define ANGLE 		0.523599f
+# define HEX 		16
+# define WIDTH		1920
+# define HEIGHT 	1030
+# define ZOOM_BASE	50
 
 typedef struct	s_data
 {
@@ -48,11 +49,12 @@ typedef struct	s_master
 {
 	t_var	mlx;
 	t_data	img;
+	double	zoom;
 	int		**matrix;
+	int		**mcolor;
 	int		cols;
 	int		rows;
 	int		color;
-	int		**mcolor;
 }				t_master;
 
 typedef struct	s_axis
@@ -70,13 +72,39 @@ typedef struct	s_color
 	short int	blue;
 }				t_color;
 
-// -------- Prototypes ---------
+// -------- Matrix.c -------------
+int		**matrix_double(t_master *master);
+int		**matrix_make(t_master *master);
+void	matrix_free(int **matrix, int rows);
+
+// -------- Matrix_utils.c -------
+int		matrix_fill(int fd, t_master *master);
+int		matrix_init(t_master *master, int fd);
+void	matrix_error(int **color, t_master *master);
+
+// -------- FDF_MLX_utils.c ---------
+int		open_map(int argc, char **argv);
+int		ft_mlx_init(t_master *master);
+int		key_map(int keycode, t_master *master);
+int		close_program(t_master *master);
+void	pixel_put(t_data *data, int x, int y, int color);
+
+// -------- parsing.c --------------
+int		ft_atoi_hex(char *nbr, int base);
+int		count_num(t_master *master, int fd);
+char	*get_buffer(int fd);
+void	buffer_check(char *buffer, int *cols, int *color);
+void	values_checker(char *buf, t_master *master, int *index, t_axis *id);
+
+// -------- main.c -----------------
+void	zoom_init(t_master *master);
+
 int		ishigher(int org, int dest);
 
 void	pixel_put(t_data *data, int x, int y, int color);
 
 void	bresenham(t_data *view, t_axis *org, t_axis dest, int color);
 
-void	projection(int **matrix, int x, int y, t_axis *dest);
+void	projection(t_master *master, int x, int y, t_axis *dest);
 
 #endif
