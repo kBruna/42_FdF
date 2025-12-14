@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/13 17:25:28 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/13 21:30:34 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,21 +37,13 @@ void	ft_void_swap(void *var1, void *var2, size_t size)
 	free(temp);
 }
 
-void	swap_vars(t_axis *cal, t_axis *org, t_axis *dest, t_axis *diff)
-{
-	ft_void_swap(&cal->x, &cal->y, sizeof(int));
-	ft_void_swap(&org->x, &org->y, sizeof(int));
-	ft_void_swap(&dest->x, &dest->y, sizeof(int));
-	ft_void_swap(&diff->x, &diff->y, sizeof(int));
-}
-
 void	zoom_init(t_master *master)
 {
 	int	w_size;
 	int h_size;
 
-	h_size = HEIGHT / (master->rows + master->cols);
-	w_size = WIDTH / (master->cols + master->rows);
+	h_size = HEIGHT / master->rows;
+	w_size = WIDTH / master->cols;
 	if (h_size > w_size)
 		master->zoom = w_size / 2;
 	else
@@ -64,19 +56,29 @@ void	projection(t_master *master, int x, int y, t_axis *dest)
 	double	dy;
 	double	z;
 	double	z_zoom;
+	double	temp_dx;
 
-	z_zoom = 1;
+	z_zoom = 5;
 	z = master->matrix[y][x] * z_zoom;
-	dx = x - (master->cols - 1)/ 2;
-	dy = y - (master->rows - 1)/ 2;
+	dx = x - master->cols/ 2;
+	dy = y - master->rows/ 2;
 	dx *= master->zoom;
 	dy *= master->zoom;
-	dx = (dx - dy) * cos(ANGLE);
-	dy = (dx + dy) * sin(ANGLE) - z;
+	temp_dx = dx;
+	dx = (temp_dx - dy) * cos(ANGLE);
+	dy = (temp_dx + dy) * sin(ANGLE) - z;
 	dx += WIDTH / 2;
 	dy += HEIGHT / 2;
 	dest->x = (int)round(dx);
 	dest->y = (int)round(dy);
+}
+
+void	swap_vars(t_axis *cal, t_axis *org, t_axis *dest, t_axis *diff)
+{
+	ft_void_swap(&cal->x, &cal->y, sizeof(int));
+	ft_void_swap(&org->x, &org->y, sizeof(int));
+	ft_void_swap(&dest->x, &dest->y, sizeof(int));
+	ft_void_swap(&diff->x, &diff->y, sizeof(int));
 }
 
 void	bresanham(t_data *view, t_axis org, t_axis dest)
@@ -94,8 +96,7 @@ void	bresanham(t_data *view, t_axis org, t_axis dest)
 	bress = 2 * cal.y - cal.x;
 	while (org.x != dest.x || org.y != dest.y)
 	{
-		if (org.x > 0 && org.x < WIDTH && org.y > 0 && org.y < HEIGHT)
-			pixel_put(view, org.x, org.y, org.color);
+		pixel_put(view, org.x, org.y, org.color);
 		if (bress < 0)
 		{
 			bres_util(&org.x, &org.y, bress, diff);
@@ -153,6 +154,7 @@ int	main(int argc, char **argv)
 		x = 0;
 		while(x < master.cols)
 		{
+			org = (t_axis){0};
 			projection(&master, x, y, &org);
 			org.color = color;
 			dest.color = color2;

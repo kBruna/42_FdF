@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 10:01:50 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/13 10:03:56 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/13 20:31:05 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,11 @@ void	pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
-	dst = data->addr + (y * data->line_length + x * (data->bpp / 8));
-	*(unsigned int *)dst = color;
+	if (x > 0 && x < WIDTH && y > 0 && y < HEIGHT)
+	{
+		dst = data->addr + (y * data->line_length + x * (data->bpp / 8));
+		*(unsigned int *)dst = color;
+	}
 }
 
 int	close_program(t_master *master)
