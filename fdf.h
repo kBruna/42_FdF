@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/13 11:38:11 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/14 20:04:26 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,12 @@
 # define HEX 		16
 # define WIDTH		1920
 # define HEIGHT 	1030
-# define ZOOM_BASE	50
+
+enum	e_error
+{
+	CONTINUE,
+	ERROR,
+};
 
 typedef struct	s_data
 {
@@ -37,6 +42,7 @@ typedef struct	s_data
 	int		bpp;
 	int		line_length;
 	int		endian;
+	int		steep;
 }				t_data;
 
 typedef struct	s_var
@@ -79,7 +85,7 @@ void	matrix_free(int **matrix, int rows);
 
 // -------- Matrix_utils.c -------
 int		matrix_fill(int fd, t_master *master);
-int		matrix_init(t_master *master, int fd);
+void	matrix_init(t_master *master, int fd);
 void	matrix_error(int **color, t_master *master);
 
 // -------- FDF_MLX_utils.c ---------
@@ -94,17 +100,18 @@ int		ft_atoi_hex(char *nbr, int base);
 int		count_num(t_master *master, int fd);
 char	*get_buffer(int fd);
 void	buffer_check(char *buffer, int *cols, int *color);
-void	values_checker(char *buf, t_master *master, int *index, t_axis *id);
+void	values_checker(char *buf, t_master *master, t_axis *id);
 
-// -------- main.c -----------------
+// -------- bresanham.c ------------
+void	projection(t_master *master, int x, int y, t_axis *dest);
+void	bresanham(t_data *view, t_axis org, t_axis dest);
+
+// -------- bresanham_util.c -------
+int		ishigher(int org, int dest);
+void	ft_void_swap(void *var1, void *var2, size_t size);
 void	zoom_init(t_master *master);
 
-int		ishigher(int org, int dest);
+// -------- main.c -----------------
 
-void	pixel_put(t_data *data, int x, int y, int color);
-
-void	bresenham(t_data *view, t_axis *org, t_axis dest, int color);
-
-void	projection(t_master *master, int x, int y, t_axis *dest);
 
 #endif

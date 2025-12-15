@@ -6,131 +6,78 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/13 21:30:34 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/14 21:15:31 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../fdf.h"
 
-int	ishigher(int org, int dest)
-{
-	if (org < dest)
-		return (1);
-	return (-1);
-}
-
-void	bres_util(int *org_x, int *org_y, double bress, t_axis diff)
-{
-	*org_x += diff.x;
-	if (bress >= 0)
-		*org_y += diff.y;
-}
-
-void	ft_void_swap(void *var1, void *var2, size_t size)
-{
-	void	*temp;
-
-	temp = ft_calloc(size, 1);
-	ft_memcpy(temp, var1, size);
-	ft_memcpy(var1, var2, size);
-	ft_memcpy(var2, temp, size);
-	free(temp);
-}
-
-void	zoom_init(t_master *master)
-{
-	int	w_size;
-	int h_size;
-
-	h_size = HEIGHT / master->rows;
-	w_size = WIDTH / master->cols;
-	if (h_size > w_size)
-		master->zoom = w_size / 2;
-	else
-		master->zoom = h_size / 2;
-}
-
-void	projection(t_master *master, int x, int y, t_axis *dest)
-{
-	double	dx;
-	double	dy;
-	double	z;
-	double	z_zoom;
-	double	temp_dx;
-
-	z_zoom = 5;
-	z = master->matrix[y][x] * z_zoom;
-	dx = x - master->cols/ 2;
-	dy = y - master->rows/ 2;
-	dx *= master->zoom;
-	dy *= master->zoom;
-	temp_dx = dx;
-	dx = (temp_dx - dy) * cos(ANGLE);
-	dy = (temp_dx + dy) * sin(ANGLE) - z;
-	dx += WIDTH / 2;
-	dy += HEIGHT / 2;
-	dest->x = (int)round(dx);
-	dest->y = (int)round(dy);
-}
-
-void	swap_vars(t_axis *cal, t_axis *org, t_axis *dest, t_axis *diff)
-{
-	ft_void_swap(&cal->x, &cal->y, sizeof(int));
-	ft_void_swap(&org->x, &org->y, sizeof(int));
-	ft_void_swap(&dest->x, &dest->y, sizeof(int));
-	ft_void_swap(&diff->x, &diff->y, sizeof(int));
-}
-
-void	bresanham(t_data *view, t_axis org, t_axis dest)
-{
-	double	bress;
-	t_axis	cal;
-	t_axis	diff;
-
-	cal.x = abs(dest.x - org.x);
-	cal.y = abs(dest.y - org.y);
-	diff.x = ishigher(org.x, dest.x);
-	diff.y = ishigher(org.y, dest.y);
-	if (cal.y > cal.x)
-		swap_vars(&cal, &org, &dest, &diff);
-	bress = 2 * cal.y - cal.x;
-	while (org.x != dest.x || org.y != dest.y)
-	{
-		pixel_put(view, org.x, org.y, org.color);
-		if (bress < 0)
-		{
-			bres_util(&org.x, &org.y, bress, diff);
-			bress += 2 * cal.y;
-		}
-		else
-		{
-			bres_util(&org.x, &org.y, bress, diff);
-			bress += 2 * cal.y - 2 * cal.x;
-		}
-	}
-}
-
-int	init_check(int argc, char **argv, t_master *master)
+void	init_check(int argc, char **argv, t_master *master)
 {
 	int			fd;
 
 	fd = open_map(argc, argv);
 	if (fd == -1)
-		return (FALSE);
-	if (!matrix_init(master, fd))
-		return (FALSE);
+	{
+		perror("Error opening file");
+		exit (ERROR);
+	}
+	matrix_init(master, fd);
 	fd = open_map(argc, argv);
 	if (fd == -1)
 	{
 		matrix_error(master->mcolor, master);
-		return (FALSE);
+		exit (ERROR);
 	}
 	if (!matrix_fill(fd, master))
-		return (FALSE);
+	{
+		perror("Error filling matrix");
+		exit (ERROR);
+	}
 	if(!ft_mlx_init(master))
-		return (FALSE);
-	return (TRUE);
+	{
+		perror("Error Initializing MLX Lib");
+		exit (ERROR);
+	}
 }	
+/*
+void	matrix_print(t_master master)
+{
+	t_axis	id;
+
+	id = (t_axis){0};
+	while (id.y < master.rows)
+	{
+		id.x = 0;
+		while (id.x < master.cols)
+		{
+			ft_printf("%d ", master.matrix[id.y][id.x]);
+			id.x++;
+		}
+		ft_printf("\n");
+		id.y++;
+	}
+	ft_printf("\n");
+}
+
+void	mcolor_print(t_master master)
+{
+	t_axis	id;
+
+	id = (t_axis){0};
+	while (id.y < master.rows)
+	{
+		id.x = 0;
+		while (id.x < master.cols)
+		{
+			ft_printf("%p ", master.mcolor[id.y][id.x]);
+			id.x++;
+		}
+		ft_printf("\n");
+		id.y++;
+	}
+	ft_printf("\n");
+}*/
 
 int	main(int argc, char **argv)
 {
@@ -142,13 +89,15 @@ int	main(int argc, char **argv)
 	int			x;
 	int			y;
 
-	if (!init_check(argc, argv, &master))
-		return (FALSE);
+	init_check(argc, argv, &master);
 	master.img.addr = mlx_get_data_addr(master.img.img, &master.img.bpp, 
 			&master.img.line_length, &master.img.endian);
 	y = 0;
 	color = 0x0000FFFF;
 	color2 = 0x00FF0000;
+//	matrix_print(master);
+//	if (master.color)
+//		mcolor_print(master);
 	while(y < master.rows)
 	{
 		x = 0;
@@ -162,16 +111,16 @@ int	main(int argc, char **argv)
 			{
 				dest = (t_axis){0};
 				projection(&master, x + 1, y, &dest);
-				if (dest.x < 0 || dest.x > WIDTH || dest.y > HEIGHT || dest.y < 0)
-					continue ;
+//				if (dest.x < 0 || dest.x > WIDTH || dest.y > HEIGHT || dest.y < 0)
+//					continue ;
 				bresanham(&master.img, org, dest);
 			}
 			if (y + 1 < master.rows)
 			{
 				dest = (t_axis){0};
 				projection(&master, x, y + 1, &dest);
-				if (dest.x < 0 || dest.x > WIDTH || dest.y > HEIGHT || dest.y < 0)
-					continue ;
+//				if (dest.x < 0 || dest.x > WIDTH || dest.y > HEIGHT || dest.y < 0)
+//					continue ;
 				bresanham(&master.img, org, dest);
 			}
 			x++;

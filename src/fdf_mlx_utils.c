@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 10:01:50 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/13 20:31:05 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/14 17:59:46 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	pixel_put(t_data *data, int x, int y, int color)
 {
 	char	*dst;
 
+	if (data->steep)
+		ft_void_swap(&x, &y, sizeof(int));	
 	if (x > 0 && x < WIDTH && y > 0 && y < HEIGHT)
 	{
 		dst = data->addr + (y * data->line_length + x * (data->bpp / 8));
@@ -64,6 +66,7 @@ int	ft_mlx_init(t_master *master)
 		free(master->mlx.mlx);
 		return (FALSE);
 	}
+	master->img.steep = 0;
 	return (TRUE);
 }
 
@@ -74,13 +77,13 @@ int	open_map(int argc, char **argv)
 	if (argc != 2)
 	{
 			ft_putstr_fd("Error: Wrong number of parameters used\n", 2);
-		return (FALSE);
+			exit (ERROR);
 	}
 	fd = open(argv[argc - 1], O_RDONLY);
 	if (fd == -1)
 	{
-		ft_putstr_fd("Error: Failed to open map\n", 2);
-		return (FALSE);
+		perror("Error: Failed to open map");
+		exit (ERROR);
 	}
 	return (fd);
 }

@@ -3,5 +3,5 @@ minilibx
 minilibx_m*
 WARP.md
 *.swp
-*.o
+src/*.o
 fdf

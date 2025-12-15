@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 10:14:41 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/13 10:26:08 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/14 21:26:31 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void	buffer_check(char *buffer, int *cols, int *color)
 	{
 		if (ft_strchr(split[idx], ','))
 			(*color) = 1;
+		if (!ft_strncmp(split[idx], "\n", 1))
+			break;
 		idx++;
 	}
 	(*cols) = idx;
@@ -64,12 +66,12 @@ int	count_num(t_master *master, int fd)
 		buffer = NULL; 
 		if (master->cols == 0)
 			master->cols = cols;
-		else if (master->cols != cols)
+		if (master->cols != cols)
 		{
-			ft_putstr_fd("Error: Wrong Map Format\n", 2);
+			ft_putstr_fd("File Error: Wrong Format Map\n", 2);
 			close(fd);
-			return (FALSE);
-		}	
+			exit (ERROR);
+		}
 		master->rows++; 
 	}
 	return (TRUE); 
@@ -78,37 +80,50 @@ int	count_num(t_master *master, int fd)
 int	ft_atoi_hex(char *nbr, int base)
 {
 	long int	hex;
+	int			idx;
 
 	hex = 0;
+	idx = 0;
 	if (nbr[0] == '0' && (nbr[1] == 'x' || nbr[1] == 'X'))
-		*nbr += 2;
-	while (*nbr)
+		idx += 2;
+	while (nbr[idx])
 	{
-		if (ft_isdigit(*nbr))
-			hex = hex * base + (*nbr - '0');
-		else if (*nbr >= 'a' && *nbr <= 'f') 
-			hex = hex * base + (*nbr - 'a' + 10);
-		else if (*nbr >= 'A' && *nbr <= 'F')
-			hex = hex * base + (*nbr - 'A' + 10);
+		if (ft_isdigit(nbr[idx]))
+			hex = hex * base + (nbr[idx] - '0');
+		else if (nbr[idx] >= 'a' && nbr[idx] <= 'f') 
+			hex = hex * base + (nbr[idx] - 'a' + 10);
+		else if (nbr[idx] >= 'A' && nbr[idx] <= 'F')
+			hex = hex * base + (nbr[idx] - 'A' + 10);
 		else
 			break ;
-		*nbr += 1;
+		idx++;
 	}
 	return (hex);
 }
 
-void	values_checker(char *buf, t_master *master, int *index, t_axis *id)
+void	values_checker(char *buf, t_master *master, t_axis *id)
 {
-	if (ft_isdigit(buf[*index]) || buf[*index] == '-' || buf[*index] == '+')
-		master->matrix[id->y][id->x] = ft_atoi(&buf[*index]);
-	while (ft_isdigit(buf[*index]))
-		(*index)++;	
-	if (master->color && buf[*index] == ',')
+	char	**split;
+	int		idx;
+	int		hex;
+
+	idx = 0;
+	hex = 0;
+	split = ft_split(buf, ' ');
+	if (!split)
+		return ;
+	while (idx < master->cols)
 	{
-		(*index)++;	
-		master->mcolor[id->y][id->x] = ft_atoi_hex(buf, HEX);
+		master->matrix[id->y][id->x] = ft_atoi(split[idx]);
+		if (master->color && ft_strchr(split[idx], ','))
+		{
+			hex = ft_atoi_hex(ft_strchr(split[idx], ',') + 1, HEX);
+			master->mcolor[id->y][id->x] = hex;
+		}
+		idx++;
+		id->x++;
 	}
-	while (ft_isspace(buf[*index]))
-		(*index)++;	
-	id->x++;
+	while (idx-- > 0)
+		free(split[idx]);
+	free(split);
 }
