@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 10:14:41 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/14 21:26:31 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/14 21:33:33 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void	values_checker(char *buf, t_master *master, t_axis *id)
 		idx++;
 		id->x++;
 	}
-	while (idx-- > 0)
-		free(split[idx]);
+	while (idx > 0)
+		free(split[--idx]);
 	free(split);
 }

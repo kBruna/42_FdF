@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/14 21:15:31 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/14 21:35:02 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	mcolor_print(t_master master)
 	}
 	ft_printf("\n");
 }*/
-
+// TODO : CHECK for LEAKS : test_maps/10-2.pdf
 int	main(int argc, char **argv)
 {
 	t_master	master;
