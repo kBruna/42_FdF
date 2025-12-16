@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/14 21:35:02 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/15 12:49:21 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,9 @@ void	mcolor_print(t_master master)
 	}
 	ft_printf("\n");
 }*/
-// TODO : CHECK for LEAKS : test_maps/10-2.pdf
 int	main(int argc, char **argv)
 {
 	t_master	master;
-	int			color;
 	int			color2;
 	t_axis		org;
 	t_axis		dest;
@@ -92,35 +90,32 @@ int	main(int argc, char **argv)
 	init_check(argc, argv, &master);
 	master.img.addr = mlx_get_data_addr(master.img.img, &master.img.bpp, 
 			&master.img.line_length, &master.img.endian);
-	y = 0;
-	color = 0x0000FFFF;
 	color2 = 0x00FF0000;
 //	matrix_print(master);
 //	if (master.color)
 //		mcolor_print(master);
+	y = 0;
+	org = (t_axis){0};
+	dest = (t_axis){0};
 	while(y < master.rows)
 	{
 		x = 0;
 		while(x < master.cols)
 		{
-			org = (t_axis){0};
 			projection(&master, x, y, &org);
-			org.color = color;
-			dest.color = color2;
 			if (x + 1 < master.cols)
 			{
-				dest = (t_axis){0};
 				projection(&master, x + 1, y, &dest);
-//				if (dest.x < 0 || dest.x > WIDTH || dest.y > HEIGHT || dest.y < 0)
-//					continue ;
 				bresanham(&master.img, org, dest);
 			}
 			if (y + 1 < master.rows)
 			{
-				dest = (t_axis){0};
 				projection(&master, x, y + 1, &dest);
-//				if (dest.x < 0 || dest.x > WIDTH || dest.y > HEIGHT || dest.y < 0)
-//					continue ;
+				bresanham(&master.img, org, dest);
+			}
+			if (master.color && x + 1 < master.cols && y + 1 < master.rows)
+			{
+				projection(&master, x + 1, y + 1, &dest);
 				bresanham(&master.img, org, dest);
 			}
 			x++;

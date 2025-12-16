@@ -6,49 +6,12 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 10:14:41 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/14 21:33:33 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/15 21:13:00 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../fdf.h"
 
-char	*get_buffer(int fd)
-{
-	char	*buffer;
-
-	buffer = get_next_line(fd);
-	if (buffer == NULL)
-	{
-		free(buffer);
-		close(fd);
-	}
-	return (buffer);
-}
-
-void	buffer_check(char *buffer, int *cols, int *color)
-{
-	int		idx;
-	char	**split;
-
-	idx = 0;
-	split = ft_split(buffer, ' ');
-	while (split[idx] != NULL)
-	{
-		if (ft_strchr(split[idx], ','))
-			(*color) = 1;
-		if (!ft_strncmp(split[idx], "\n", 1))
-			break;
-		idx++;
-	}
-	(*cols) = idx;
-	while (idx > 0)
-	{
-		idx--;
-		free(split[idx]);
-	}
-	free(split);
-}
-	
 int	count_num(t_master *master, int fd)
 {
 	int		cols;
@@ -77,6 +40,46 @@ int	count_num(t_master *master, int fd)
 	return (TRUE); 
 }
 
+void	ft_split_free(char **split)
+{
+	int	idx;
+
+	idx = 0;
+	while (split[idx] != NULL)
+	{
+		free(split[idx]);
+		idx++;
+	}
+	free(split);
+}
+	
+void	values_checker(char *buf, t_master *master, t_axis *id)
+{
+	char	**split;
+	int		idx;
+	int		hex;
+
+	idx = 0;
+	hex = 0;
+	split = ft_split(buf, ' ');
+	if (!split)
+		return ;
+	while (idx < master->cols)
+	{
+		master->matrix[id->y][id->x] = ft_atoi(split[idx]);
+		if (master->color && ft_strchr(split[idx], ','))
+		{
+			hex = ft_atoi_hex(ft_strchr(split[idx], ',') + 1, HEX);
+			master->mcolor[id->y][id->x] = hex;
+		}
+		else if (master->color)
+			master->mcolor[id->y][id->x] = DEFCOLOR;
+		idx++;
+		id->x++;
+	}
+	ft_split_free(split);
+}
+
 int	ft_atoi_hex(char *nbr, int base)
 {
 	long int	hex;
@@ -99,31 +102,4 @@ int	ft_atoi_hex(char *nbr, int base)
 		idx++;
 	}
 	return (hex);
-}
-
-void	values_checker(char *buf, t_master *master, t_axis *id)
-{
-	char	**split;
-	int		idx;
-	int		hex;
-
-	idx = 0;
-	hex = 0;
-	split = ft_split(buf, ' ');
-	if (!split)
-		return ;
-	while (idx < master->cols)
-	{
-		master->matrix[id->y][id->x] = ft_atoi(split[idx]);
-		if (master->color && ft_strchr(split[idx], ','))
-		{
-			hex = ft_atoi_hex(ft_strchr(split[idx], ',') + 1, HEX);
-			master->mcolor[id->y][id->x] = hex;
-		}
-		idx++;
-		id->x++;
-	}
-	while (idx > 0)
-		free(split[--idx]);
-	free(split);
 }

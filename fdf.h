@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/14 20:04:26 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/15 21:25:06 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define HEX 		16
 # define WIDTH		1920
 # define HEIGHT 	1030
+# define DEFCOLOR	0x00FFFF
 
 enum	e_error
 {
@@ -33,10 +34,15 @@ enum	e_error
 	ERROR,
 };
 
+enum	e_colormask
+{
+	MASKRED = 0b11111111 << 16,
+	MASKGREEN = 0b11111111 << 8,
+	MASKBLUE = 0b11111111
+};
+
 typedef struct	s_data
 {
-//	void	*mlx;
-//	void	*window;
 	void	*img;
 	void	*addr;
 	int		bpp;
@@ -67,7 +73,6 @@ typedef struct	s_axis
 {
 	int	x;
 	int y;
-	int z;
 	int	color;
 }				t_axis;
 
@@ -95,12 +100,18 @@ int		key_map(int keycode, t_master *master);
 int		close_program(t_master *master);
 void	pixel_put(t_data *data, int x, int y, int color);
 
+// -------- buffer.c ---------------
+char	*get_buffer(int fd);
+void	buffer_check(char *buffer, int *cols, int *color);
+
 // -------- parsing.c --------------
 int		ft_atoi_hex(char *nbr, int base);
 int		count_num(t_master *master, int fd);
-char	*get_buffer(int fd);
-void	buffer_check(char *buffer, int *cols, int *color);
 void	values_checker(char *buf, t_master *master, t_axis *id);
+void	ft_split_free(char **split);
+
+// -------- color.c ----------------
+int		color_att(t_axis org, t_axis dest, t_axis cal);
 
 // -------- bresanham.c ------------
 void	projection(t_master *master, int x, int y, t_axis *dest);

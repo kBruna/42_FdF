@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 15:29:23 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/14 19:30:16 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/15 21:24:27 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@ void	projection(t_master *master, int x, int y, t_axis *dest)
 	double	z_zoom;
 	double	temp_dx;
 
+	if (master->color)
+		dest->color = master->mcolor[y][x];
+	else
+		dest->color = DEFCOLOR;
 	z_zoom = master->zoom * 0.5;
 	z = master->matrix[y][x] * z_zoom;
 	dx = x - master->cols/ 2;
@@ -30,7 +34,7 @@ void	projection(t_master *master, int x, int y, t_axis *dest)
 	dx = (temp_dx - dy) * cos(ANGLE);
 	dy = (temp_dx + dy) * sin(ANGLE) - z;
 	dx += WIDTH / 2;
-	dy += HEIGHT / 2 + master->zoom;
+	dy += HEIGHT/ 2;
 	dest->x = (int)round(dx);
 	dest->y = (int)round(dy);
 }
@@ -60,6 +64,7 @@ void	bresanham(t_data *view, t_axis org, t_axis dest)
 	double	bress;
 	t_axis	cal;
 	t_axis	diff;
+	int		color;
 
 	cal.x = abs(dest.x - org.x);
 	cal.y = abs(dest.y - org.y);
@@ -74,8 +79,11 @@ void	bresanham(t_data *view, t_axis org, t_axis dest)
 	bress = 2 * cal.y - cal.x;
 	while (org.x != dest.x || org.y != dest.y)
 	{
-		pixel_put(view, org.x, org.y, org.color);
+		if (org.color != dest.color)
+			color = color_att(org, dest, cal);
+		else
+			color = dest.color;
+		pixel_put(view, org.x, org.y, color);
 		bres_util(&org, cal, &bress, diff);
 	}
 }
-
