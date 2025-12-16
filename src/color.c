@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 21:23:28 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/15 21:43:23 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 18:45:14 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,12 @@ int	color_att(t_axis org, t_axis dest, t_axis cal)
 
 	og_col = color_rgb(org);
 	dst_col = color_rgb(dest);
-	ratio = (float)org.x / cal.x;
-	ncolor.red = og_col.red + (int)((dst_col.red - og_col.red)) * ratio;
-	ncolor.green = og_col.green + (int)((dst_col.green - og_col.green)) * ratio;
-	ncolor.blue = og_col.blue + (int)((dst_col.blue - og_col.blue)) * ratio;
-	color = (ncolor.red << 16) | (ncolor.blue << 8) | ncolor.blue;
+	if (org.x > dest.x)
+		ft_void_swap(&org.x, &dest.x, sizeof(int));
+	ratio = (float)(org.x - (dest.x - cal.x)) / cal.x;
+	ncolor.red = (1 - ratio) * og_col.red + dst_col.red * ratio;
+	ncolor.green = (1 - ratio) * og_col.green + dst_col.green * ratio;
+	ncolor.blue = (1 - ratio) * og_col.blue + dst_col.blue * ratio;
+	color = (ncolor.red << 16) | (ncolor.green << 8) | ncolor.blue;
 	return (color);
 }
-//TODO : Corrigir a gradacao de cor mds
