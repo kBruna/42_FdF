@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/15 12:49:21 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:25:38 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,50 +78,15 @@ void	mcolor_print(t_master master)
 	}
 	ft_printf("\n");
 }*/
+
 int	main(int argc, char **argv)
 {
 	t_master	master;
-	int			color2;
-	t_axis		org;
-	t_axis		dest;
-	int			x;
-	int			y;
 
 	init_check(argc, argv, &master);
 	master.img.addr = mlx_get_data_addr(master.img.img, &master.img.bpp, 
 			&master.img.line_length, &master.img.endian);
-	color2 = 0x00FF0000;
-//	matrix_print(master);
-//	if (master.color)
-//		mcolor_print(master);
-	y = 0;
-	org = (t_axis){0};
-	dest = (t_axis){0};
-	while(y < master.rows)
-	{
-		x = 0;
-		while(x < master.cols)
-		{
-			projection(&master, x, y, &org);
-			if (x + 1 < master.cols)
-			{
-				projection(&master, x + 1, y, &dest);
-				bresanham(&master.img, org, dest);
-			}
-			if (y + 1 < master.rows)
-			{
-				projection(&master, x, y + 1, &dest);
-				bresanham(&master.img, org, dest);
-			}
-			if (master.color && x + 1 < master.cols && y + 1 < master.rows)
-			{
-				projection(&master, x + 1, y + 1, &dest);
-				bresanham(&master.img, org, dest);
-			}
-			x++;
-		}
-		y++;
-	}
+	ft_fdf(&master);
 	mlx_put_image_to_window(master.mlx.mlx, master.mlx.window, master.img.img, 0, 0);
 	mlx_hook(master.mlx.window, 2, 1L<<0, key_map, &master.mlx);
 	mlx_hook(master.mlx.window, 17, 1L<<17, close_program, &master.mlx);

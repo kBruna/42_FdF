@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/15 21:25:06 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:32:03 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,17 @@ typedef struct	s_axis
 	int	color;
 }				t_axis;
 
+typedef struct	s_point
+{
+	int	x;
+	int	y;
+}				t_point;
+
 typedef struct	s_color
 {
-	short int	red;
-	short int	green;
-	short int	blue;
+	int	red;
+	int	green;
+	int	blue;
 }				t_color;
 
 // -------- Matrix.c -------------
@@ -122,7 +128,8 @@ int		ishigher(int org, int dest);
 void	ft_void_swap(void *var1, void *var2, size_t size);
 void	zoom_init(t_master *master);
 
-// -------- main.c -----------------
-
+// -------- fdf.c ------------------
+void	bres_call(t_master *master, t_point id);
+void	ft_fdf(t_master *master);
 
 #endif
