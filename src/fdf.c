@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 20:24:43 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/16 20:31:42 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:54:02 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ void	ft_fdf(t_master *master)
 	t_point	id;
 
 	id.y = 0;
-	while(id.y < master->rows)
+	while (id.y < master->rows)
 	{
 		id.x = 0;
-		while(id.x < master->cols)
+		while (id.x < master->cols)
 		{
 			bres_call(master, id);
 			id.x++;

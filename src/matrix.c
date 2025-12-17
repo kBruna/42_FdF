@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 09:50:54 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/13 09:56:02 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:46:25 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	**matrix_make(t_master *master)
 	idx = 0;
 	while (idx < master->rows)
 	{
-		matrix[idx] = (int *)ft_calloc(master->cols,sizeof(int));
+		matrix[idx] = (int *)ft_calloc(master->cols, sizeof(int));
 		if (matrix[idx] == NULL)
 		{
 			while (idx > 0)

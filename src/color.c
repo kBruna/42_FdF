@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 21:23:28 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/16 18:45:14 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:54:29 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static t_color	color_rgb(t_axis point)
 {
 	t_color	color;
-	
+
 	color.red = (point.color & MASKRED) >> 16;
 	color.green = (point.color & MASKGREEN) >> 8;
 	color.blue = point.color & MASKBLUE;
@@ -24,7 +24,7 @@ static t_color	color_rgb(t_axis point)
 
 int	color_att(t_axis org, t_axis dest, t_axis cal)
 {
-	t_color og_col;
+	t_color	og_col;
 	t_color	dst_col;
 	t_color	ncolor;
 	float	ratio;

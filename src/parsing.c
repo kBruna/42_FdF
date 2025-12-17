@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 10:14:41 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/15 21:13:00 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:47:26 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	count_num(t_master *master, int fd)
 		if (!buffer)
 			break ;
 		buffer_check(buffer, &cols, &master->color);
-		free(buffer); 
-		buffer = NULL; 
+		free(buffer);
+		buffer = NULL;
 		if (master->cols == 0)
 			master->cols = cols;
 		if (master->cols != cols)
@@ -35,9 +35,9 @@ int	count_num(t_master *master, int fd)
 			close(fd);
 			exit (ERROR);
 		}
-		master->rows++; 
+		master->rows++;
 	}
-	return (TRUE); 
+	return (TRUE);
 }
 
 void	ft_split_free(char **split)
@@ -52,7 +52,7 @@ void	ft_split_free(char **split)
 	}
 	free(split);
 }
-	
+
 void	values_checker(char *buf, t_master *master, t_axis *id)
 {
 	char	**split;
@@ -93,7 +93,7 @@ int	ft_atoi_hex(char *nbr, int base)
 	{
 		if (ft_isdigit(nbr[idx]))
 			hex = hex * base + (nbr[idx] - '0');
-		else if (nbr[idx] >= 'a' && nbr[idx] <= 'f') 
+		else if (nbr[idx] >= 'a' && nbr[idx] <= 'f')
 			hex = hex * base + (nbr[idx] - 'a' + 10);
 		else if (nbr[idx] >= 'A' && nbr[idx] <= 'F')
 			hex = hex * base + (nbr[idx] - 'A' + 10);

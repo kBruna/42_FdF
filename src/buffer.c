@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 21:11:18 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/15 21:12:42 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:49:55 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,9 @@ void	buffer_check(char *buffer, int *cols, int *color)
 		if (ft_strchr(split[idx], ','))
 			(*color) = 1;
 		if (!ft_strncmp(split[idx], "\n", 1))
-			break;
+			break ;
 		idx++;
 	}
 	(*cols) = idx;
 	ft_split_free(split);
 }
-
-

@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/16 20:32:03 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:57:56 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ enum	e_colormask
 	MASKBLUE = 0b11111111
 };
 
-typedef struct	s_data
+typedef struct s_data
 {
 	void	*img;
 	void	*addr;
@@ -51,13 +51,13 @@ typedef struct	s_data
 	int		steep;
 }				t_data;
 
-typedef struct	s_var
+typedef struct s_var
 {
 	void	*mlx;
 	void	*window;
 }				t_var;
 
-typedef struct	s_master
+typedef struct s_master
 {
 	t_var	mlx;
 	t_data	img;
@@ -69,20 +69,20 @@ typedef struct	s_master
 	int		color;
 }				t_master;
 
-typedef struct	s_axis
+typedef struct s_axis
 {
 	int	x;
-	int y;
+	int	y;
 	int	color;
 }				t_axis;
 
-typedef struct	s_point
+typedef struct s_point
 {
 	int	x;
 	int	y;
 }				t_point;
 
-typedef struct	s_color
+typedef struct s_color
 {
 	int	red;
 	int	green;

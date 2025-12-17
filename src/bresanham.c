@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 15:29:23 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/16 18:15:02 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:55:02 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,15 @@ void	projection(t_master *master, int x, int y, t_axis *dest)
 		dest->color = DEFCOLOR;
 	z_zoom = master->zoom * 0.5;
 	z = master->matrix[y][x] * z_zoom;
-	dx = x - master->cols/ 2;
-	dy = y - master->rows/ 2;
+	dx = x - master->cols / 2;
+	dy = y - master->rows / 2;
 	dx *= master->zoom;
 	dy *= master->zoom;
 	temp_dx = dx;
 	dx = (temp_dx - dy) * cos(ANGLE);
 	dy = (temp_dx + dy) * sin(ANGLE) - z;
 	dx += WIDTH / 2;
-	dy += HEIGHT/ 2;
+	dy += HEIGHT / 2;
 	dest->x = (int)round(dx);
 	dest->y = (int)round(dy);
 }

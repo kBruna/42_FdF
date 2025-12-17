@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 09:56:26 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/14 20:04:09 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/16 20:49:04 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	matrix_init(t_master *master, int fd)
 
 int	matrix_fill(int fd, t_master *master)
 {
-	t_axis 	id;
+	t_axis	id;
 	char	*buf;
 
 	id.y = 0;
