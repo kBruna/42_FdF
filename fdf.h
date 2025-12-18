@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/16 20:57:56 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/17 14:48:55 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,11 @@ typedef struct s_color
 	int	blue;
 }				t_color;
 
+// -------- fdf_util.s.c ---------------
+void	init_check(int argc, char **argv, t_master *master);
+int		open_map(int argc, char **argv);
+int		close_program(t_master *master);
+
 // -------- Matrix.c -------------
 int		**matrix_double(t_master *master);
 int		**matrix_make(t_master *master);
@@ -100,10 +105,8 @@ void	matrix_init(t_master *master, int fd);
 void	matrix_error(int **color, t_master *master);
 
 // -------- FDF_MLX_utils.c ---------
-int		open_map(int argc, char **argv);
 int		ft_mlx_init(t_master *master);
 int		key_map(int keycode, t_master *master);
-int		close_program(t_master *master);
 void	pixel_put(t_data *data, int x, int y, int color);
 
 // -------- buffer.c ---------------
