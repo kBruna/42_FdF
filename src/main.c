@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/17 17:52:30 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/18 17:31:08 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	fdf_hook(t_master *master)
 {
 	mlx_hook(master->mlx.window, 2, 1L << 0, key_map, &master->mlx);
 	mlx_hook(master->mlx.window, 17, 1L << 17, close_program, &master->mlx);
-	mlx_hook(master->mlx.window, MotionNotify, PointerMotionMask, translate, &master->mlx);
 	mlx_hook(master->mlx.window, 4, 1L << 2, translate, &master->mlx);
 }
 

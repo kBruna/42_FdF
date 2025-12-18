@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/17 14:48:55 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/18 19:51:53 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,22 @@
 # define HEIGHT 	1030
 # define DEFCOLOR	0x00FFFF
 
+enum	e_projection
+{
+	ISO,
+	PLANE
+};
+
 enum	e_error
 {
 	CONTINUE,
-	ERROR,
+	ERROR
+};
+
+enum	e_on_off
+{
+	OFF,
+	ON
 };
 
 enum	e_colormask
@@ -67,6 +79,9 @@ typedef struct s_master
 	int		cols;
 	int		rows;
 	int		color;
+	int		offset_x;
+	int		offset_y;
+	int		projection;
 }				t_master;
 
 typedef struct s_axis
@@ -123,8 +138,9 @@ void	ft_split_free(char **split);
 int		color_att(t_axis org, t_axis dest, t_axis cal);
 
 // -------- bresanham.c ------------
-void	projection(t_master *master, int x, int y, t_axis *dest);
 void	bresanham(t_data *view, t_axis org, t_axis dest);
+void	projection(t_master *master, int x, int y, t_axis *dest);
+void	project_iso(t_master *master, int x, int y, t_axis *dest);
 
 // -------- bresanham_util.c -------
 int		ishigher(int org, int dest);

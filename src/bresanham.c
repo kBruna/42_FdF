@@ -6,13 +6,19 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 15:29:23 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/16 20:55:02 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/18 19:49:46 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../fdf.h"
 
 void	projection(t_master *master, int x, int y, t_axis *dest)
+{
+	if (master->projection == ISO)
+		project_iso(master, x, y, dest);
+}
+
+void	project_iso(t_master *master, int x, int y, t_axis *dest)
 {
 	double	dx;
 	double	dy;
@@ -33,8 +39,8 @@ void	projection(t_master *master, int x, int y, t_axis *dest)
 	temp_dx = dx;
 	dx = (temp_dx - dy) * cos(ANGLE);
 	dy = (temp_dx + dy) * sin(ANGLE) - z;
-	dx += WIDTH / 2;
-	dy += HEIGHT / 2;
+	dx += master->offset_x;
+	dy += master->offset_y;
 	dest->x = (int)round(dx);
 	dest->y = (int)round(dy);
 }
@@ -70,10 +76,10 @@ void	bresanham(t_data *view, t_axis org, t_axis dest)
 	cal.y = abs(dest.y - org.y);
 	diff.x = ishigher(org.x, dest.x);
 	diff.y = ishigher(org.y, dest.y);
-	view->steep = 0;
+	view->steep = OFF;
 	if (cal.y > cal.x)
 	{
-		view->steep = 1;
+		view->steep = ON;
 		swap_vars(&cal, &org, &dest, &diff);
 	}
 	bress = 2 * cal.y - cal.x;

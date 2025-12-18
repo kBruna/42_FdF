@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 15:33:47 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/17 21:26:12 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/18 19:43:49 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,49 +30,58 @@ void	ft_void_swap(void *var1, void *var2, size_t size)
 	free(temp);
 }
 
-int	range(t_master *master)
+void	map_size(t_master *master, t_point *max, t_point *min, t_axis *map)
 {
 	t_point	id;
-	int		max;
-	int		min;
 
-	id = (t_point){0};
-	max = 0;
-	min = 0;
+	id.y = 0;
+	master->zoom = 1;
 	while (id.y + 1 < master->rows)
 	{
 		id.x = 0;
 		while (id.x + 1 < master->cols)
 		{
-			if (max < master->matrix[id.y][id.x])
-				max = master->matrix[id.y][id.x];
-			if (min > master->matrix[id.y][id.x])
-				min = master->matrix[id.y][id.x];
+			*map = (t_axis){0};
+			projection(master, id.x, id.y, map);
+			if (map->y < min->y)
+				min->y = map->y;
+			if (map->y > max->y)
+				max->y = map->y;
+			if (map->x > max->x)
+				max->x = map->x;
+			if (map->x < min->x)
+				min->x = map->x;
 			id.x++;
 		}
 		id.y++;
 	}
-	return(max - min);
+	map->x = max->x - min->x;
+	map->y = max->y - min->y;
 }
 
 void	zoom_init(t_master *master)
 {
 	double	w_size;
 	double	h_size;
-	int		number;
-	int		denominator;
+	t_axis	map;
+	t_point	max;
+	t_point	min;
 
 	if (!master->rows || !master->cols)
 		return ;
-	number = range(master);
-	denominator = (master->rows + master->cols) / 2;
-	h_size = HEIGHT / master->rows;
-	w_size = WIDTH / master->cols;
+	max.x = MIN_INT;
+	max.y = MIN_INT;
+	min.y = MAX_INT;
+	min.x = MAX_INT;
+	master->offset_x = WIDTH;
+	master->offset_y = HEIGHT;
+	map_size(master, &max, &min, &map);
+	h_size = floor((WIDTH * 0.7) / map.x);
+	w_size = floor((HEIGHT * 0.7) / map.y);
 	if (h_size > w_size)
-		master->zoom = w_size / 1.5;
+		master->zoom *= w_size;
 	else
-		master->zoom = h_size / 1.5;
-	if (number > 50 && number * master->zoom > (HEIGHT / 2))
-		master->zoom = (int)ceil(number / denominator);
+		master->zoom *= h_size;
+	master->offset_x = WIDTH / 2;
+	master->offset_y = (HEIGHT / 4 + (max.y + min.y) / 6);
 }
-// TODO: I DUNNO ANYMORE
