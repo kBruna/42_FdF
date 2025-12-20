@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 10:14:41 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/16 20:47:26 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/20 16:40:48 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,14 @@ void	ft_split_free(char **split)
 	free(split);
 }
 
+void	z_check(t_master *master, int x, int y)
+{
+	if (master->matrix[y][x] < master->min.z)
+		master->min.z = master->matrix[y][x];
+	if (master->matrix[y][x] > master->max.z)
+		master->max.z = master->matrix[y][x];
+}
+
 void	values_checker(char *buf, t_master *master, t_axis *id)
 {
 	char	**split;
@@ -67,6 +75,7 @@ void	values_checker(char *buf, t_master *master, t_axis *id)
 	while (idx < master->cols)
 	{
 		master->matrix[id->y][id->x] = ft_atoi(split[idx]);
+		z_check(master, id->x, id->y);
 		if (master->color && ft_strchr(split[idx], ','))
 		{
 			hex = ft_atoi_hex(ft_strchr(split[idx], ',') + 1, HEX);

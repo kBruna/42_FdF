@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/19 21:18:30 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/20 19:14:08 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,10 @@ typedef struct s_point
 {
 	int	x;
 	int	y;
+	int	z;
 }				t_point;
 
-
+//TODO : Make struct camera on the project to organize types
 typedef struct s_master
 {
 	t_var	mlx;
@@ -98,15 +99,15 @@ typedef struct s_master
 typedef struct s_axis
 {
 	double	z;
-	int	x;
-	int	y;
-	int	color;
+	int		x;
+	int		y;
+	int		color;
 }				t_axis;
 
 typedef struct s_delta
 {
-	double x;
-	double y;
+	double	x;
+	double	y;
 }				t_delta;
 
 typedef struct s_color
@@ -116,10 +117,12 @@ typedef struct s_color
 	int	blue;
 }				t_color;
 
-int	translate(int button, int x, int y, void *ptr);
+int		translate(int button, int x, int y, void *ptr);
+
 // -------- fdf_util.s.c ---------------
 void	init_check(int argc, char **argv, t_master *master);
 int		open_map(int argc, char **argv);
+void	clean_program(t_master *master, int clean_matrix);
 int		close_program(t_master *master);
 
 // -------- Matrix.c -------------
@@ -150,7 +153,7 @@ void	ft_split_free(char **split);
 
 // -------- color.c ----------------
 int		color_att(t_axis org, t_axis dest, t_axis cal);
-int		depth_color(int	color, float ratio);
+int		depth_color(int color, float ratio);
 
 // -------- projection.c -----------
 void	projection(t_master *master, int x, int y, t_axis *dest);

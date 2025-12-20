@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 21:23:28 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/19 19:19:59 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/20 14:17:55 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	color_att(t_axis org, t_axis dest, t_axis cal)
 	return (color);
 }
 
-int		depth_color(int	color, float ratio)
+int	depth_color(int color, float ratio)
 {
 	t_color		rgb;
 	long double	color_depth;

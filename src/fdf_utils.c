@@ -6,7 +6,7 @@
 /*   By: buehara <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 14:45:35 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/17 14:50:07 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/20 14:07:54 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,22 @@ void	init_check(int argc, char **argv, t_master *master)
 	}
 }
 
-int	close_program(t_master *master)
+void	clean_program(t_master *master, int clean_matrix)
 {
-	int	cols;
-
-	cols = 0;
-	matrix_free(master->mcolor, master->rows);
-	matrix_free(master->matrix, master->rows);
-	mlx_destroy_image(master->mlx.mlx, master->img.img);
+	if (clean_matrix)
+	{
+		matrix_free(master->mcolor, master->rows);
+		matrix_free(master->matrix, master->rows);
+	}
+	if (master->img.img)
+		mlx_destroy_image(master->mlx.mlx, master->img.img);
 	mlx_destroy_window(master->mlx.mlx, master->mlx.window);
 	mlx_destroy_display(master->mlx.mlx);
 	free(master->mlx.mlx);
+}
+
+int	close_program(t_master *master)
+{
+	clean_program(master, ON);
 	exit(0);
 }
