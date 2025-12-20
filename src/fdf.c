@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 20:24:43 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/16 20:54:02 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/19 21:17:28 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	ft_fdf(t_master *master)
 		}
 		id.y++;
 	}
+	mlx_put_image_to_window(master->mlx.mlx,
+		master->mlx.window, master->img.img, 0, 0);
 }
 
 void	bres_call(t_master *master, t_point id)

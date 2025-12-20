@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/14 15:33:47 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/18 19:43:49 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/19 20:53:16 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,18 @@ void	zoom_init(t_master *master)
 	double	w_size;
 	double	h_size;
 	t_axis	map;
-	t_point	max;
-	t_point	min;
+	//t_point	max;
+	//t_point	min;
 
 	if (!master->rows || !master->cols)
 		return ;
-	max.x = MIN_INT;
-	max.y = MIN_INT;
-	min.y = MAX_INT;
-	min.x = MAX_INT;
+	master->max.x = MIN_INT;
+	master->max.y = MIN_INT;
+	master->min.y = MAX_INT;
+	master->min.x = MAX_INT;
 	master->offset_x = WIDTH;
 	master->offset_y = HEIGHT;
-	map_size(master, &max, &min, &map);
+	map_size(master, &master->max, &master->min, &map);
 	h_size = floor((WIDTH * 0.7) / map.x);
 	w_size = floor((HEIGHT * 0.7) / map.y);
 	if (h_size > w_size)
@@ -83,5 +83,5 @@ void	zoom_init(t_master *master)
 	else
 		master->zoom *= h_size;
 	master->offset_x = WIDTH / 2;
-	master->offset_y = (HEIGHT / 4 + (max.y + min.y) / 6);
+	master->offset_y = (HEIGHT / 4 + (master->max.y + master->min.y) / 6);
 }

@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/18 19:51:53 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/19 21:18:30 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@
 enum	e_projection
 {
 	ISO,
-	PLANE
+	TOP_VIEW,
+	X_VIEW,
+	Y_VIEW
 };
 
 enum	e_error
@@ -69,10 +71,19 @@ typedef struct s_var
 	void	*window;
 }				t_var;
 
+typedef struct s_point
+{
+	int	x;
+	int	y;
+}				t_point;
+
+
 typedef struct s_master
 {
 	t_var	mlx;
 	t_data	img;
+	t_point	max;
+	t_point	min;
 	double	zoom;
 	int		**matrix;
 	int		**mcolor;
@@ -86,16 +97,17 @@ typedef struct s_master
 
 typedef struct s_axis
 {
+	double	z;
 	int	x;
 	int	y;
 	int	color;
 }				t_axis;
 
-typedef struct s_point
+typedef struct s_delta
 {
-	int	x;
-	int	y;
-}				t_point;
+	double x;
+	double y;
+}				t_delta;
 
 typedef struct s_color
 {
@@ -104,6 +116,7 @@ typedef struct s_color
 	int	blue;
 }				t_color;
 
+int	translate(int button, int x, int y, void *ptr);
 // -------- fdf_util.s.c ---------------
 void	init_check(int argc, char **argv, t_master *master);
 int		open_map(int argc, char **argv);
@@ -123,6 +136,7 @@ void	matrix_error(int **color, t_master *master);
 int		ft_mlx_init(t_master *master);
 int		key_map(int keycode, t_master *master);
 void	pixel_put(t_data *data, int x, int y, int color);
+void	fdf_hook(t_master *master);
 
 // -------- buffer.c ---------------
 char	*get_buffer(int fd);
@@ -136,10 +150,14 @@ void	ft_split_free(char **split);
 
 // -------- color.c ----------------
 int		color_att(t_axis org, t_axis dest, t_axis cal);
+int		depth_color(int	color, float ratio);
+
+// -------- projection.c -----------
+void	projection(t_master *master, int x, int y, t_axis *dest);
+void	project_iso(t_master *master, int x, int y, t_axis *dest);
 
 // -------- bresanham.c ------------
 void	bresanham(t_data *view, t_axis org, t_axis dest);
-void	projection(t_master *master, int x, int y, t_axis *dest);
 void	project_iso(t_master *master, int x, int y, t_axis *dest);
 
 // -------- bresanham_util.c -------

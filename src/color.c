@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 21:23:28 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/16 20:54:29 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/19 19:19:59 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,16 @@ int	color_att(t_axis org, t_axis dest, t_axis cal)
 	ncolor.blue = (1 - ratio) * og_col.blue + dst_col.blue * ratio;
 	color = (ncolor.red << 16) | (ncolor.green << 8) | ncolor.blue;
 	return (color);
+}
+
+int		depth_color(int	color, float ratio)
+{
+	t_color		rgb;
+	long double	color_depth;
+
+	rgb.red = ((color >> 16) & 0xFF) * ratio;
+	rgb.green = ((color >> 8) & 0xFF) * ratio;
+	rgb.blue = (color & 0xFF) * ratio;
+	color_depth = (rgb.red << 16) | (rgb.green << 8) | rgb.blue;
+	return (color_depth);
 }

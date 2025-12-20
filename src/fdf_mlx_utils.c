@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 10:01:50 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/17 14:50:35 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/19 21:18:38 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,16 @@ int	key_map(int keycode, t_master *master)
 {
 	if (keycode == XK_Escape)
 		close_program(master);
+	if else (keycode == XK_1)
+		
 	return (0);
+}
+
+void	fdf_hook(t_master *master)
+{
+	mlx_hook(master->mlx.window, 2, 1L << 0, key_map, &master->mlx);
+	mlx_hook(master->mlx.window, 17, 1L << 17, close_program, &master->mlx);
+	mlx_hook(master->mlx.window, 4, 1L << 2, translate, &master->mlx);
 }
 
 int	ft_mlx_init(t_master *master)

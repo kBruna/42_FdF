@@ -5,3 +5,4 @@ WARP.md
 *.swp
 *.o
 fdf
+src/*.o
