@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/20 21:22:12 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/21 20:22:58 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ int	main(int argc, char **argv)
 	t_master	master;
 
 	init_check(argc, argv, &master);
-//	master.img.addr = mlx_get_data_addr(master.img.img, &master.img.bpp,
-//			&master.img.line_length, &master.img.endian);
 	ft_fdf(&master);
 	fdf_hook(&master);
 	mlx_put_image_to_window(master.mlx.mlx,

@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 10:01:50 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/20 21:34:52 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/21 20:26:10 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,43 +25,6 @@ void	pixel_put(t_data *data, int x, int y, int color)
 	}
 }
 
-void	select_projection(t_master *master, int view)
-{
-	master->camera.projection = view;
-	mlx_destroy_image(master->mlx.mlx, master->img.img);
-	ft_fdf(master);
-}
-
-void	zoom_projection(t_master *master, int keycode)
-{
-	float	add_zoom;
-
-	if (master->rows > 20 && master->cols > 20)
-		add_zoom = 0.5;
-	else
-		add_zoom = 2;
-	if (keycode == XK_o && master->camera.zoom > 1)
-		master->camera.zoom -= add_zoom;
-	else if (keycode == XK_i)
-		master->camera.zoom += add_zoom;
-	mlx_destroy_image(master->mlx.mlx, master->img.img);
-	ft_fdf(master);
-}
-
-void	translate(t_master *master, int keycode)
-{
-	if (keycode == XK_w)
-		master->camera.y_add -= 2;
-	else if (keycode == XK_s)
-		master->camera.y_add += 2;
-	if (keycode == XK_d)
-		master->camera.x_add += 2;
-	else if (keycode == XK_a)
-		master->camera.x_add -= 2;
-	mlx_destroy_image(master->mlx.mlx, master->img.img);
-	ft_fdf(master);
-}
-
 int	key_map(int keycode, t_master *master)
 {
 	if (keycode == XK_Escape)
@@ -76,9 +39,13 @@ int	key_map(int keycode, t_master *master)
 		select_projection(master, ISO);
 	else if (keycode == XK_i || keycode == XK_o)
 		zoom_projection(master, keycode);
-	else if (keycode == XK_w || keycode == XK_a ||
-		keycode == XK_d || keycode == XK_s)
+	else if (keycode == XK_w || keycode == XK_a
+		|| keycode == XK_d || keycode == XK_s)
 		translate(master, keycode);
+	else if (keycode == XK_Up || keycode == XK_Down || keycode == XK_e
+		|| keycode == XK_Right || keycode == XK_Left || keycode == XK_q
+		|| keycode == XK_r)
+		rotate(master, keycode);
 	return (0);
 }
 

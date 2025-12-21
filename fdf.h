@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/20 21:26:50 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/21 20:21:50 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define FDF_H
 
 # include <math.h>
-//# include <OpenGL/gl.h>
 # include <fcntl.h>
 # include "../minilibx/mlx.h"
 # include "../minilibx/mlx_int.h"
@@ -81,20 +80,23 @@ typedef struct s_point
 typedef struct s_camera
 {
 	double	zoom;
+	int		projection;
 	int		offset_x;
 	int		offset_y;
 	int		x_add;
 	int		y_add;
-	int		projection;
+	float	angle_x;
+	float	angle_y;
+	float	angle_z;
 }				t_camera;
 
 typedef struct s_master
 {
 	t_var		mlx;
 	t_data		img;
+	t_camera	camera;
 	t_point		max;
 	t_point		min;
-	t_camera	camera;
 	int			**matrix;
 	int			**mcolor;
 	int			cols;
@@ -163,7 +165,22 @@ int		depth_color(int color, float ratio);
 
 // -------- projection.c -----------
 void	projection(t_master *master, int x, int y, t_axis *dest);
-void	project_iso(t_master *master, int x, int y, t_axis *dest);
+
+// -------- projection_utils.c -----
+void	select_projection(t_master *master, int view);
+void	reset_rotate(t_master *master);
+void	projection_offset(t_camera *camera);
+void	delta_update(t_master *master, t_delta *delta, int x, int y);
+
+// -------- projection_keycodes.c ----------
+void	zoom_projection(t_master *master, int keycode);
+void	translate(t_master *master, int keycode);
+void	rotate(t_master *master, int keycode);
+
+// -------- rotate.c ---------------
+void	rotate_angle(double *y, double *x, double *z, t_camera camera);
+void	rotate_x_z(double *y, double *z, float angle);
+void	rotate_y(double *y, double *z, float angle);
 
 // -------- bresanham.c ------------
 void	bresanham(t_data *view, t_axis org, t_axis dest);
