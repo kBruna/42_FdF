@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 09:56:26 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/20 16:35:42 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/20 21:27:20 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@ void	matrix_init(t_master *master, int fd)
 	master->cols = 0;
 	master->rows = 0;
 	master->color = OFF;
-	master->zoom = 0;
+	master->camera = (t_camera){0};
 	master->mcolor = NULL;
-	master->projection = ISO;
 	master->max.x = MIN_INT;
 	master->max.y = MIN_INT;
 	master->max.z = MIN_INT;

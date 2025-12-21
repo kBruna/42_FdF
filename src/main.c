@@ -6,19 +6,11 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:14:17 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/20 13:53:53 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/20 21:22:12 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../fdf.h"
-
-int	translate(int button, int x, int y, void *ptr)
-{
-	if (button == 1)
-		ft_printf("Coord: (%d, %d)\n", x, y);
-	(void)ptr;
-	return (0);
-}
 
 int	main(int argc, char **argv)
 {

@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/20 19:14:08 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/20 21:26:50 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,22 +78,28 @@ typedef struct s_point
 	int	z;
 }				t_point;
 
-//TODO : Make struct camera on the project to organize types
-typedef struct s_master
+typedef struct s_camera
 {
-	t_var	mlx;
-	t_data	img;
-	t_point	max;
-	t_point	min;
 	double	zoom;
-	int		**matrix;
-	int		**mcolor;
-	int		cols;
-	int		rows;
-	int		color;
 	int		offset_x;
 	int		offset_y;
+	int		x_add;
+	int		y_add;
 	int		projection;
+}				t_camera;
+
+typedef struct s_master
+{
+	t_var		mlx;
+	t_data		img;
+	t_point		max;
+	t_point		min;
+	t_camera	camera;
+	int			**matrix;
+	int			**mcolor;
+	int			cols;
+	int			rows;
+	int			color;
 }				t_master;
 
 typedef struct s_axis
@@ -117,7 +123,7 @@ typedef struct s_color
 	int	blue;
 }				t_color;
 
-int		translate(int button, int x, int y, void *ptr);
+void	translate(t_master *master, int keycode);
 
 // -------- fdf_util.s.c ---------------
 void	init_check(int argc, char **argv, t_master *master);
