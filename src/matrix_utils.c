@@ -6,7 +6,7 @@
 /*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/13 09:56:26 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/20 21:27:20 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/22 12:20:00 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,12 @@ void	matrix_error(int **color, t_master *master)
 {
 	matrix_free(color, master->rows);
 	matrix_free(master->matrix, master->rows);
+	perror("Error");
 	exit (ERROR);
 }
 
-void	matrix_init(t_master *master, int fd)
+void	vars_init(t_master *master)
 {
-	int	**color;
-
 	master->cols = 0;
 	master->rows = 0;
 	master->color = OFF;
@@ -34,7 +33,16 @@ void	matrix_init(t_master *master, int fd)
 	master->min.x = MAX_INT;
 	master->min.y = MAX_INT;
 	master->min.z = MAX_INT;
+}
+
+void	matrix_init(t_master *master, int fd)
+{
+	int	**color;
+
+	vars_init(master);
 	count_num(master, fd);
+	if (!master->cols)
+		exit(ERROR);
 	color = matrix_double(master);
 	if (!master->matrix)
 	{

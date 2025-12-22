@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buehara <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: buehara <buehara@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/17 14:45:35 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/20 14:07:54 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/22 12:17:57 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ int	open_map(int argc, char **argv)
 	fd = open(argv[argc - 1], O_RDONLY);
 	if (fd == -1)
 	{
-		perror("Error: Failed to open map");
-		exit (ERROR);
+		perror("Error");
 	}
 	return (fd);
 }
@@ -36,10 +35,7 @@ void	init_check(int argc, char **argv, t_master *master)
 
 	fd = open_map(argc, argv);
 	if (fd == -1)
-	{
-		perror("Error opening file");
 		exit (ERROR);
-	}
 	matrix_init(master, fd);
 	fd = open_map(argc, argv);
 	if (fd == -1)
@@ -76,5 +72,5 @@ void	clean_program(t_master *master, int clean_matrix)
 int	close_program(t_master *master)
 {
 	clean_program(master, ON);
-	exit(0);
+	exit(SUCCESS);
 }

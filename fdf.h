@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
+/*   By: buehara <buehara@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 20:42:30 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/21 20:21:50 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/22 12:26:17 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include <math.h>
 # include <fcntl.h>
-# include "../minilibx/mlx.h"
-# include "../minilibx/mlx_int.h"
+# include "minilibx-linux/mlx.h"
+# include "minilibx-linux/mlx_int.h"
 # include "src/Libft/includes/libft.h"
 # include "src/Libft/includes/get_next_line.h"
 # include "src/Libft/includes/ft_printf.h"
@@ -37,7 +37,7 @@ enum	e_projection
 
 enum	e_error
 {
-	CONTINUE,
+	SUCCESS,
 	ERROR
 };
 
@@ -85,6 +85,7 @@ typedef struct s_camera
 	int		offset_y;
 	int		x_add;
 	int		y_add;
+	int		rotate_auto;
 	float	angle_x;
 	float	angle_y;
 	float	angle_z;
@@ -142,12 +143,11 @@ void	matrix_free(int **matrix, int rows);
 int		matrix_fill(int fd, t_master *master);
 void	matrix_init(t_master *master, int fd);
 void	matrix_error(int **color, t_master *master);
+void	vars_init(t_master *master);
 
 // -------- FDF_MLX_utils.c ---------
 int		ft_mlx_init(t_master *master);
-int		key_map(int keycode, t_master *master);
 void	pixel_put(t_data *data, int x, int y, int color);
-void	fdf_hook(t_master *master);
 
 // -------- buffer.c ---------------
 char	*get_buffer(int fd);
@@ -173,11 +173,14 @@ void	projection_offset(t_camera *camera);
 void	delta_update(t_master *master, t_delta *delta, int x, int y);
 
 // -------- projection_keycodes.c ----------
+void	fdf_hook(t_master *master);
+int		key_map(int keycode, t_master *master);
 void	zoom_projection(t_master *master, int keycode);
 void	translate(t_master *master, int keycode);
 void	rotate(t_master *master, int keycode);
 
 // -------- rotate.c ---------------
+int		rotate_animate(t_master *master);
 void	rotate_angle(double *y, double *x, double *z, t_camera camera);
 void	rotate_x_z(double *y, double *z, float angle);
 void	rotate_y(double *y, double *z, float angle);

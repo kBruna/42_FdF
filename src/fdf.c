@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: buehara <buehara@student.42sp.org.br>      +#+  +:+       +#+        */
+/*   By: buehara <buehara@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/16 20:24:43 by buehara           #+#    #+#             */
-/*   Updated: 2025/12/20 14:12:28 by buehara          ###   ########.fr       */
+/*   Updated: 2025/12/22 12:07:53 by buehara          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ void	ft_fdf(t_master *master)
 	if (!master->img.img)
 	{
 		clean_program(master, OFF);
-		return ;
+		perror("Error creating image");
+		exit(ERROR);
 	}
 	master->img.addr = mlx_get_data_addr(master->img.img, &master->img.bpp,
 			&master->img.line_length, &master->img.endian);
